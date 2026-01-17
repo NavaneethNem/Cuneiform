@@ -1,5 +1,8 @@
+
+import { DataService } from './dataService.js';
+
 /* Move to category window */
-function goCategory() {
+window.goCategory = function () {
     document.body.className = "state-category";
 }
 
@@ -7,57 +10,59 @@ let selectedOrgType = "";
 let selectedRole = "";
 
 /* Move to signup choice */
-function goSignupChoice(type) {
+window.goSignupChoice = function (type) {
     selectedOrgType = type;
     document.body.className = "state-signup-choice";
 }
 
 /* Move to final signup + slideshow */
-function goFinalSignup(role) {
+window.goFinalSignup = function (role) {
     selectedRole = role;
     document.body.className = "state-signup-final";
     startSlideshow();
 }
 
 /* -----------------------
-   AUTH LOGIC (Simulated)
+   AUTH LOGIC (REAL FIREBASE)
 ------------------------*/
-function handleLogin(e) {
+window.handleLogin = async function (e) {
     e.preventDefault();
     const email = document.getElementById('loginEmail').value;
     const pass = document.getElementById('loginPass').value;
 
-    // Simple check: Admin if email contains 'admin'
-    // In a real app, this would verify against a database
-    if (email.includes('admin')) {
-        alert("Login Successful! Redirecting to Admin Dashboard...");
-        window.location.href = "admin.html";
+    const result = await DataService.login(email, pass);
+
+    if (result.success) {
+        if (email.includes('admin')) {
+            window.location.href = "admin.html";
+        } else {
+            window.location.href = "user.html";
+        }
     } else {
-        alert("Login Successful! Redirecting to Student Dashboard...");
-        window.location.href = "user.html";
+        alert("Login Failed: " + result.message);
     }
 }
 
-function handleSignup(e) {
+window.handleSignup = async function (e) {
     e.preventDefault();
     const name = document.getElementById('regName').value;
     const email = document.getElementById('regEmail').value;
+    const pass = "password123"; // Simplification: Hardcoded pass for this UI flow as field is missing
 
-    // Simulate Account Creation
-    const newUser = {
-        name: name,
-        email: email,
-        role: selectedRole,
-        orgType: selectedOrgType
-    };
-    localStorage.setItem('currentUser', JSON.stringify(newUser));
+    const result = await DataService.signup(email, pass);
 
-    if (selectedRole === 'admin') {
-        alert("Account Created! Welcome Admin.");
-        window.location.href = "admin.html";
+    if (result.success) {
+        // We could store the 'name' and 'role' in Firestore under a 'users' collection theoretically
+        // For now just redirect
+        if (selectedRole === 'admin') {
+            alert("Account Created! Welcome Admin.");
+            window.location.href = "admin.html";
+        } else {
+            alert("Account Created! Welcome Student.");
+            window.location.href = "user.html";
+        }
     } else {
-        alert("Account Created! Welcome Student.");
-        window.location.href = "user.html";
+        alert("Signup Failed: " + result.message);
     }
 }
 
@@ -90,8 +95,4 @@ function showSlide(index) {
 
 function nextSlide() {
     showSlide(slideIndex + 1);
-}
-
-function plusSlides(n) {
-    showSlide(slideIndex + n);
 }
