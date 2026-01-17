@@ -20,11 +20,11 @@
     <p>Universal Complaint Platform</p>
 
     <!-- LOGIN FORM -->
-    <form class="login-form screen">
-      <input type="email" placeholder="Email ID" required />
-      <input type="password" placeholder="Password" required />
+    <form class="login-form screen" onsubmit="handleLogin(event)">
+      <input type="email" id="loginEmail" placeholder="Email ID" required />
+      <input type="password" id="loginPass" placeholder="Password" required />
 
-      <button class="login-btn" type="button" onclick="goCategory()">Login</button>
+      <button class="login-btn" type="submit">Login</button>
 
       <div class="account-row">
         <span class="left-text">DON'T HAVE AN ACCOUNT?</span>
@@ -34,17 +34,17 @@
 
     <!-- CATEGORY WINDOW -->
     <div class="category-window screen">
-      <div class="category-item" onclick="goSignupChoice()">
+      <div class="category-item" onclick="goSignupChoice('Hostel')">
         <img src="edu.png" />
         <h3>HOSTEL</h3>
       </div>
 
-      <div class="category-item" onclick="goSignupChoice()">
+      <div class="category-item" onclick="goSignupChoice('Hospital')">
         <img src="hospital.png" />
         <h3>HOSPITAL</h3>
       </div>
 
-      <div class="category-item" onclick="goSignupChoice()">
+      <div class="category-item" onclick="goSignupChoice('Flat')">
         <img src="flat.png" />
         <h3>FLAT</h3>
       </div>
@@ -52,8 +52,8 @@
 
     <!-- SIGNUP CHOICE -->
     <div class="signup-choice screen">
-      <button class="buttonsignup" onclick="goFinalSignup()">Signup as Student</button>
-      <button class="buttonsignup" onclick="goFinalSignup()">Signup as Admin</button>
+      <button class="buttonsignup" onclick="goFinalSignup('user')">Signup as Student</button>
+      <button class="buttonsignup" onclick="goFinalSignup('admin')">Signup as Admin</button>
     </div>
 
     <!-- SLIDESHOW -->
@@ -68,25 +68,27 @@
     </div>
 
     <!-- FINAL SIGNUP FORM -->
-    <form class="signup-form screen">
+    <form class="signup-form screen" onsubmit="handleSignup(event)">
       <div class="divider-line"></div>
 
-      <input type="text" placeholder="User name" required />
-      <input type="email" placeholder="Email ID" required />
-      <input type="password" placeholder="Password" required />
-      <input type="password" placeholder="Confirm Password" required />
+      <input type="text" id="regName" placeholder="User name" required />
+      <input type="email" id="regEmail" placeholder="Email ID" required />
+      <input type="password" id="regPass" placeholder="Password" required />
+      <input type="password" id="regPassConf" placeholder="Confirm Password" required />
 
-      <select class="gender-select" required>
+      <select class="gender-select" id="regGender" required>
         <option disabled selected>Select Gender</option>
         <option>Male</option>
         <option>Female</option>
         <option>Other</option>
       </select>
 
-      <input type="date" class="dob-input" required />
+      <input type="date" class="dob-input" id="regDob" required />
 
       <button type="submit" class="create-btn">Create Account</button>
     </form>
+
+
 
   </div>
 

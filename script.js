@@ -105,12 +105,52 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 });
 
+const aiKeywords = {
+    urgency: {
+        "Critical": ["fire", "spark", "smoke", "leak", "flood", "danger", "electric", "short circuit", "exposed", "emergency", "asap", "now", "blood", "injury"],
+        "High": ["broken", "not working", "fail", "power", "water", "internet", "wifi", "stopped", "dead"],
+        "Medium": ["slow", "noise", "dirty", "smell", "dust", "garbage", "clean"],
+    },
+    sentiment: {
+        "Frustrated 😡": ["stupid", "hate", "useless", "again", "wtf", "damn", "worst", "fix", "annoying", "never"],
+        "Urgent ⚠️": ["please", "help", "emergency", "immediately", "quick", "hurry"],
+        "Constructive 💡": ["suggest", "maybe", "improve", "would be", "better", "idea", "propose", "could"]
+    }
+};
+
 function autoCategorize(text) {
     text = text.toLowerCase();
     for (let category in keywords) {
         if (keywords[category].some(key => text.includes(key))) return category;
     }
     return "General";
+}
+
+function analyzeText(text) {
+    const lower = text.toLowerCase();
+
+    // 1. Urgency Detection
+    let urgency = "Low";
+    for (let level in aiKeywords.urgency) {
+        if (aiKeywords.urgency[level].some(k => lower.includes(k))) {
+            urgency = level;
+            break;
+        }
+    }
+
+    // 2. Sentiment Detection
+    let sentiment = "Neutral 😐";
+    if (text.includes('!') || text.includes('?')) sentiment = "Curious/Intense 🤨";
+    if (text === text.toUpperCase() && text.length > 5) sentiment = "Shouting! 📢";
+
+    for (let type in aiKeywords.sentiment) {
+        if (aiKeywords.sentiment[type].some(k => lower.includes(k))) {
+            sentiment = type;
+            break;
+        }
+    }
+
+    return { urgency, sentiment };
 }
 
 // --- 3. VIEW CONTROLLER ---
@@ -140,6 +180,8 @@ if (document.getElementById('complaintForm')) {
         const fileInput = document.getElementById('compMedia');
         const file = fileInput.files[0];
 
+        const aiData = analyzeText(desc); // Run AI Analysis
+
         const processComplaint = (attachments = []) => {
             const newComplaint = {
                 id: Date.now(),
@@ -156,13 +198,15 @@ if (document.getElementById('complaintForm')) {
                 author: isAnon ? "Anonymous" : "Me",
                 adminRemark: "",
                 comments: [],
-                attachments: attachments
+                attachments: attachments,
+                aiAnalysis: aiData // Store AI Data
             };
 
             complaints.unshift(newComplaint);
             saveData();
             closeModal('complaintModal');
             document.getElementById('complaintForm').reset();
+            resetAI(); // Reset UI
 
             if (isPrivate) alert("Private Complaint Sent! Only Admins can see this.");
             else alert("Complaint filed successfully.");
@@ -216,6 +260,12 @@ function renderComplaints() {
             ${c.isPrivate ? '<span class="badge" style="background:#d946ef; color:white; margin-left:5px;">🔒 Private</span>' : ''}
             <span class="badge" style="float:right; background:${getStatusColor(c.status)}; color:white;">${c.status}</span>
             
+            ${c.aiAnalysis ? `
+                <div style="margin-top: 5px; font-size: 12px; background: var(--bg); padding: 5px; border-radius: 4px; display: inline-block;">
+                    🤖 <b>AI Analysis:</b> ${c.aiAnalysis.sentiment} | Urgency: <b style="color:${c.aiAnalysis.urgency === 'Critical' ? 'red' : 'inherit'}">${c.aiAnalysis.urgency}</b>
+                </div>
+            ` : ''}
+
             <h4 style="margin: 10px 0;">${c.description}</h4>
             
             ${c.attachments && c.attachments.length > 0 ? `
@@ -393,6 +443,14 @@ function filterComplaints() {
             <div class="badge">${c.category}</div>
             ${c.isPrivate ? '<span class="badge" style="background:#d946ef; color:white;">🔒 Private</span>' : ''}
             <span class="badge" style="float:right; background:${getStatusColor(c.status)}; color:white;">${c.status}</span>
+            <span class="badge" style="float:right; background:${getStatusColor(c.status)}; color:white;">${c.status}</span>
+            
+            ${c.aiAnalysis ? `
+                <div style="font-size: 11px; color: var(--secondary); margin-bottom: 5px;">
+                    🤖 AI: <b>${c.aiAnalysis.sentiment}</b> | Priority: <b>${c.aiAnalysis.urgency}</b>
+                </div>
+            ` : ''}
+
             <h4>${c.description}</h4>
             ${c.attachments && c.attachments.length > 0 ? '<small>📎 Has Attachment</small>' : ''}
             <p><small>📍 ${c.location} | 👤 ${c.author} | 📅 ${c.timestamp}</small></p>
@@ -450,7 +508,30 @@ function saveSettings() {
 
 if (document.getElementById('compDesc')) {
     document.getElementById('compDesc').onkeyup = function () {
-        const cat = autoCategorize(this.value);
+        const text = this.value;
+        const cat = autoCategorize(text);
         document.querySelector('#categoryHint span').innerText = cat;
+
+        // Live AI Update
+        if (text.length > 5) {
+            const analysis = analyzeText(text);
+            document.getElementById('aiPanel').style.display = 'block';
+            document.getElementById('aiSentiment').innerText = analysis.sentiment;
+            document.getElementById('aiUrgency').innerText = analysis.urgency;
+
+            // Color coding
+            const uEl = document.getElementById('aiUrgency');
+            if (analysis.urgency === 'Critical') uEl.style.color = '#ef4444';
+            else if (analysis.urgency === 'High') uEl.style.color = '#f97316';
+            else uEl.style.color = 'var(--text)';
+        } else {
+            document.getElementById('aiPanel').style.display = 'none';
+        }
     };
+}
+
+function resetAI() {
+    document.getElementById('aiPanel').style.display = 'none';
+    document.getElementById('aiSentiment').innerText = "Neutral 😐";
+    document.getElementById('aiUrgency').innerText = "Low";
 }
