@@ -14,16 +14,42 @@
   <div class="layer layer-1"></div>
 
   <!-- Main Box -->
-  <div class="table">
+  <div class="table" id="card">
+
     <h1>CUNEIFORM</h1>
     <p>Universal Complaint Platform</p>
 
-    <div class="button1">
-      <button>Signup as Student</button>
-      <button>Signup as Admin</button>
+    <!-- LOGIN FORM (DEFAULT) -->
+    <form class="login-form">
+      <input type="email" placeholder="Email ID" required />
+      <input type="password" placeholder="Password" required />
+
+      <button class="login-form" type="submit">Login</button>
+
+      <div class="account-row">
+        <span class="left-text">DON'T HAVE AN ACCOUNT?</span>
+        <span class="create-link" onclick="showSignupChoice()">CREATE AN ACCOUNT</span>
+      </div>
+    </form>
+
+    <!-- SIGNUP CHOICE -->
+    <div class="button1 signup-choice">
+      <button class= "buttonsignup" onclick="openSignup()">Signup as Student</button>
+      <button class= "buttonsignup" onclick="openSignup()">Signup as Admin</button>
     </div>
+
+    <!-- SIGNUP FORM -->
+    <form class="signup-form">
+      <div class="divider-line"></div>
+
+      <input type="email" placeholder="Email ID" required />
+      <input type="password" placeholder="Password" required />
+      <button type="submit">Create Account</button>
+    </form>
+
   </div>
 
+  <script src="index.js"></script>
 </body>
 
 </html>

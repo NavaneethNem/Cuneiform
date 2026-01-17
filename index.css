@@ -1,5 +1,4 @@
 /* RESET */
-/* http://meyerweb.com/eric/tools/css/reset/ */
 html,
 body,
 div,
@@ -151,21 +150,22 @@ body {
     height: 300px;
     border-radius: 10px;
     z-index: 0;
+    transition: all 400ms ease;
 }
 
 .layer-3 {
     background-color: #bfe3f2;
-    transform: scale(1.5) translate(-0px, -0px);
+    transform: scale(1.5);
 }
 
 .layer-2 {
     background-color: #d6eff9;
-    transform: scale(1.35) translate(-0px, -0px);
+    transform: scale(1.35);
 }
 
 .layer-1 {
     background-color: #eaf7fd;
-    transform: scale(1.2) translate(-0px, -0px);
+    transform: scale(1.2);
 }
 
 /* MAIN CARD */
@@ -183,10 +183,12 @@ body {
     border: 1px solid rgb(6, 6, 6);
     z-index: 5;
     position: relative;
+    transition: height 400ms ease;
+    overflow: hidden;
 }
 
 h1 {
-    font-family: Georgia, Times, Times New Roman, serif;
+    font-family: Georgia, Times, 'Times New Roman', serif;
     font-size: 80px;
 }
 
@@ -194,26 +196,213 @@ p {
     font-size: 20px;
 }
 
-button {
-    border: 1px solid #9dd1ff;
-    border-radius: 10px;
-    color: #000000;
-    padding: 15px 35px;
-    background-color: rgb(242, 242, 242);
-    font-weight: 600;
-    letter-spacing: 2px;
-    width: 500px;
-    margin-left: 90px;
-    margin-top: 10px;
-    transition: background-color 200ms ease-in-out;
-}
-
-button:hover {
-    background-color: #269aff;
-}
-
-.button1 {
-    margin-top: 50px;
+/* LOGIN FORM */
+.login-form {
     display: flex;
     flex-direction: column;
+    margin-top: 8px;
 }
+
+.login-form input {
+    width: 500px;
+    margin: 10px auto;
+    padding: 14px;
+    border-radius: 8px;
+    border: 1px solid #9dd1ff;
+}
+
+.login-form button {
+    margin: 5px auto 0;
+}
+
+/* BOTTOM RIGHT */
+.account-row {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    width: 500px;
+    font-size: 12px;
+    position: absolute;
+    bottom: 2px;
+    right: 25px;
+}
+
+.left-text {
+    opacity: 0.7;
+    color: #000;
+}
+
+.create-link {
+    cursor: pointer;
+    color: #d60000;
+    font-weight: 600;
+    text-decoration: underline;
+}
+
+/* SIGNUP CHOICE */
+.signup-choice {
+    display: none;
+}
+
+/* WHEN CHOOSING SIGNUP */
+.choose-signup .login-form {
+    display: none;
+}
+
+.choose-signup .signup-choice {
+    display: flex;
+}
+
+/* SIGNUP FORM */
+.signup-form {
+    opacity: 0;
+    pointer-events: none;
+    display: flex;
+    flex-direction: column;
+    align-items: center;      /* center horizontally */
+    justify-content: center;  /* center vertically */
+    gap: 15px;
+    height: 40%;
+    transition: opacity 300ms ease;
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    /* border-left: #8ecae6 solid 2px; */
+    padding-left : 20px;
+}
+
+
+.signup-form input {
+    width: 350px;
+    margin: 12px 0;
+    padding: 14px;
+    border-radius: 8px;
+    border: 1px solid #9dd1ff;
+}
+
+.signup-form button {
+    margin-top: 20px;
+    padding: 14px;
+     border: 1px solid #9dd1ff;
+     border-radius: 8px;
+background-color: rgb(199, 238, 241);
+}
+
+
+/* WHEN SIGNUP FORM IS ACTIVE */
+.signup-active .signup-form {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.signup-active .signup-choice {
+    opacity: 0;
+    pointer-events: none;
+}
+
+/* EXPAND CARD + LAYERS */
+.signup-active .table {
+    height: 620px;
+    max-width: 1000px;   /* <-- EXPAND WIDTH */
+    width: 100%;
+    transition: all 400ms ease;
+}
+
+.signup-active .layer-1 {
+    transform: scale(1.65);
+    height: 420px;
+}
+
+.signup-active .layer-2 {
+    transform: scale(1.8);
+    height: 420px;
+}
+
+.signup-active .layer-3 {
+    transform: scale(2);
+    height: 420px;
+}
+.login-form button {
+    width: 500px;
+    margin: 10px auto;
+    padding: 14px 20px;
+    border-radius: 10px;
+    border: 2px solid #0077ff;
+    background-color: #e6f1ff;
+    color: #003b99;
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    cursor: pointer;
+    transition: all 200ms ease;
+}
+
+.login-form button:hover {
+    background-color: #0077ff;
+    color: white;
+}
+
+.login-form button:active {
+    transform: scale(0.97);
+}
+.buttonsignup {
+    width: 500px;
+    padding: 12px 20px;
+    border-radius: 8px;
+    border: 1.5px solid #9dd1ff;
+    background-color: #f8fbff;
+    color: #000;
+    font-size: 14px;
+    letter-spacing: 1px;
+    font-weight: 600;
+    cursor: pointer;
+    margin: 8px auto;
+    transition: all 200ms ease;
+}
+
+/* Hover */
+.buttonsignup:hover {
+    background-color: #269aff;
+    color: #fff;
+}
+
+/* Click */
+.buttonsignup:active {
+    transform: scale(0.97);
+}
+.button1{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    margin-top: 40px;
+}
+
+
+/* --- SIGNUP MODE LAYOUT FIX --- */
+.signup-active .table {
+    display: grid;
+    grid-template-rows: auto 1fr;
+}
+
+/* Center signup form perfectly */
+.signup-active .signup-form {
+    opacity: 1;
+    pointer-events: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;   /* 👈 vertical centering */
+    height: 100%;
+    margin: 0;
+}
+.divider-line {
+    position: absolute;
+    left: 1px;
+    top: 140px;     /* moves line downward */
+    height: 460px;  /* adjust this height smaller or bigger */
+    border-left: 1px solid #aad8ff;
+}
+
+
+
