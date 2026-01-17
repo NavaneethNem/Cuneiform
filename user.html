@@ -1,18 +1,22 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cuneiform | Student Dashboard</title>
     <link rel="stylesheet" href="style.css">
 </head>
-<body id="user"> <div class="app-container">
+
+<body id="user">
+    <div class="app-container">
         <aside class="sidebar">
             <div class="logo">Cuneiform</div>
             <nav>
                 <button onclick="showView('dashboard')" class="nav-btn active">Dashboard</button>
                 <button onclick="showView('complaints')" class="nav-btn">Complaints</button>
-                <button onclick="showView('my-complaints')" class="nav-btn">My Complaints</button> <button onclick="showView('analytics')" class="nav-btn">Analytics</button>
+                <button onclick="showView('my-complaints')" class="nav-btn">My Complaints</button> <button
+                    onclick="showView('analytics')" class="nav-btn">Analytics</button>
             </nav>
             <div class="user-profile">
                 <p style="font-size: 0.9rem; color: #666;">Logged in as: <b>Student</b></p>
@@ -28,9 +32,18 @@
 
             <section id="dashboard-view" class="view">
                 <div class="stats-grid">
-                    <div class="stat-card"><h3>Total</h3><p id="stat-total">0</p></div>
-                    <div class="stat-card"><h3>Resolved</h3><p id="stat-resolved">0</p></div>
-                    <div class="stat-card"><h3>Pending</h3><p id="stat-pending">0</p></div>
+                    <div class="stat-card">
+                        <h3>Total</h3>
+                        <p id="stat-total">0</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Resolved</h3>
+                        <p id="stat-resolved">0</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Pending</h3>
+                        <p id="stat-pending">0</p>
+                    </div>
                 </div>
                 <h3>Recent Activity</h3>
                 <div id="recent-list" class="complaint-list"></div>
@@ -69,27 +82,42 @@
             <span class="close" onclick="closeModal('complaintModal')">&times;</span>
             <h2>Submit Complaint</h2>
             <form id="complaintForm">
-                <textarea id="compDesc" placeholder="Describe the issue... (e.g. 'The tap is leaking in my room')" required></textarea>
-                
+                <textarea id="compDesc" placeholder="Describe the issue... (e.g. 'The tap is leaking in my room')"
+                    required></textarea>
+
                 <div class="form-row" style="margin: 15px 0; gap: 15px; flex-wrap: wrap;">
                     <select id="compLocation" style="flex: 1;"></select>
-                    
+
                     <div style="display: flex; gap: 15px; align-items: center;">
                         <label style="cursor: pointer; display: flex; align-items: center; gap: 5px;">
                             <input type="checkbox" id="compAnon"> 👻 Anonymous
                         </label>
-                        <label style="cursor: pointer; display: flex; align-items: center; gap: 5px; color: #d946ef; font-weight: bold;">
+                        <label
+                            style="cursor: pointer; display: flex; align-items: center; gap: 5px; color: #d946ef; font-weight: bold;">
                             <input type="checkbox" id="compPrivate"> 🔒 Private (Admin Only)
                         </label>
                     </div>
                 </div>
 
-                <p id="categoryHint" class="hint">Smart Category: <span>None</span></p>
-                <button type="submit" class="btn-primary">File Complaint</button>
+                <div class="form-row" style="margin: 15px 0;">
+                    <label style="width: 100%;">
+                        <span style="font-size: 0.9rem; font-weight: bold; margin-bottom: 5px; display: block;">📸
+                            Evidence Locker (Optional)</span>
+                        <input type="file" id="compMedia" accept="image/*,video/*"
+                            style="width: 100%; border: 1px dashed #ccc; padding: 10px; border-radius: 8px;">
+                        <small style="color: #666;">Max size: 500KB per file. Images or short videos.</small>
+                    </label>
+                </div>
+
+                <div class="form-row" style="margin: 15px 0; gap: 15px; flex-wrap: wrap;">
+
+                    <p id="categoryHint" class="hint">Smart Category: <span>None</span></p>
+                    <button type="submit" class="btn-primary">File Complaint</button>
             </form>
         </div>
     </div>
     <button class="theme-toggle" onclick="toggleTheme()" title="Toggle Dark Mode">🌙</button>
     <script src="script.js"></script>
 </body>
+
 </html>
