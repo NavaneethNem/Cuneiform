@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cuneiform | Admin Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body id="admin"> <div class="app-container">
+        <aside class="sidebar">
+            <div class="logo">Cuneiform Admin</div>
+            <nav>
+                <button onclick="showView('dashboard')" class="nav-btn active">Dashboard</button>
+                <button onclick="showView('complaints')" class="nav-btn">Complaints</button>
+                <button onclick="showView('analytics')" class="nav-btn">Analytics</button>
+                <button onclick="showView('settings')" class="nav-btn">Organization Setup</button>
+            </nav>
+            <div class="user-profile">
+                <p style="font-size: 0.9rem; color: #666;">Logged in as: <b>Admin</b></p>
+                <a href="index.html" style="font-size: 0.8rem; text-decoration: none; color: red;">Logout</a>
+            </div>
+        </aside>
+
+        <main class="content">
+            <header>
+                <h1 id="view-title">Dashboard</h1>
+            </header>
+
+            <section id="dashboard-view" class="view">
+                <div class="stats-grid">
+                    <div class="stat-card"><h3>Total</h3><p id="stat-total">0</p></div>
+                    <div class="stat-card"><h3>Resolved</h3><p id="stat-resolved">0</p></div>
+                    <div class="stat-card"><h3>Pending</h3><p id="stat-pending">0</p></div>
+                </div>
+                <h3>Recent Activity</h3>
+                <div id="recent-list" class="complaint-list"></div>
+            </section>
+
+            <section id="complaints-view" class="view" style="display:none;">
+                <div class="filters">
+                    <input type="text" id="searchInput" placeholder="Search issues..." onkeyup="filterComplaints()">
+                    <select id="filterCategory" onchange="filterComplaints()">
+                        <option value="all">All Categories</option>
+                        <option value="Maintenance">Maintenance</option>
+                        <option value="IT Support">IT Support</option>
+                        <option value="Security">Security</option>
+                    </select>
+                    <button class="btn-secondary" onclick="sortByVotes()">🔥 Sort by Votes</button>
+                </div>
+                <div id="full-complaint-list" class="complaint-list"></div>
+            </section>
+
+            <section id="analytics-view" class="view" style="display:none;">
+                <div class="chart-container">
+                    <h3>Resolution Efficiency</h3>
+                    <div id="chart-bars" class="bar-chart"></div>
+                </div>
+            </section>
+
+            <section id="settings-view" class="view" style="display:none;">
+                <div class="card">
+                    <h3>Org Configuration</h3>
+                    <label>Organization Name</label>
+                    <input type="text" id="orgName" placeholder="e.g. Green Valley Residency">
+                    <label>Building/Floor Logic (Comma separated)</label>
+                    <input type="text" id="orgLogic" placeholder="Wing A, Wing B, Floor 1, Floor 2">
+                    <button class="btn-primary" onclick="saveSettings()">Save Configuration</button>
+                </div>
+            </section>
+        </main>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
