@@ -1,3 +1,26 @@
+// --- 0. THEME MANAGEMENT (Must run first) ---
+function initTheme() {
+    const savedTheme = localStorage.getItem('unity_theme') || 'light';
+    document.documentElement.setAttribute('data-theme', savedTheme);
+    updateToggleIcon(savedTheme);
+}
+
+function toggleTheme() {
+    const current = document.documentElement.getAttribute('data-theme');
+    const target = current === 'dark' ? 'light' : 'dark';
+    
+    document.documentElement.setAttribute('data-theme', target);
+    localStorage.setItem('unity_theme', target);
+    updateToggleIcon(target);
+}
+
+function updateToggleIcon(theme) {
+    const btn = document.querySelector('.theme-toggle');
+    if(btn) btn.innerText = theme === 'dark' ? '☀️' : '🌙';
+}
+
+// Run immediately
+initTheme();
 // --- 1. INITIALIZATION & FAKE DATA ---
 const defaultComplaints = [
     { 
