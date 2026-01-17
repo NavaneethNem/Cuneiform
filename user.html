@@ -109,6 +109,19 @@
                     </label>
                 </div>
 
+                <!-- AI INSIGHT PANEL -->
+                <div id="aiPanel"
+                    style="background: var(--bg); border: 1px solid var(--border); padding: 10px; border-radius: 8px; margin-bottom: 15px; display: none;">
+                    <h4 style="margin: 0 0 5px 0; font-size: 14px; display: flex; align-items: center; gap: 5px;">
+                        🤖 AI Insights <span
+                            style="font-size: 10px; background: var(--primary); color: white; padding: 2px 6px; border-radius: 10px;">BETA</span>
+                    </h4>
+                    <div style="display: flex; gap: 15px; font-size: 13px;">
+                        <div>Sentiment: <strong id="aiSentiment">Neutral 😐</strong></div>
+                        <div>Urgency: <strong id="aiUrgency">Low</strong></div>
+                    </div>
+                </div>
+
                 <div class="form-row" style="margin: 15px 0; gap: 15px; flex-wrap: wrap;">
 
                     <p id="categoryHint" class="hint">Smart Category: <span>None</span></p>

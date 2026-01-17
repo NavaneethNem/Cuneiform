@@ -2,25 +2,97 @@
 <html>
 
 <head>
-  <title>CUNEIFORM | Login</title>
+  <title>CUNEIFORM</title>
   <link rel="stylesheet" href="index.css">
 </head>
 
-<body>
+<body class="state-login">
 
+  <!-- Background layers -->
   <div class="layer layer-3"></div>
   <div class="layer layer-2"></div>
   <div class="layer layer-1"></div>
 
-  <div class="table">
+  <!-- Main Box -->
+  <div class="table" id="card">
+
     <h1>CUNEIFORM</h1>
     <p>Universal Complaint Platform</p>
 
-    <div class="button1">
-      <button onclick="window.location.href='user.html'">Signup as Student</button>
-      <button onclick="window.location.href='admin.html'">Signup as Admin</button>
+    <!-- LOGIN FORM -->
+    <form class="login-form screen" onsubmit="handleLogin(event)">
+      <input type="email" id="loginEmail" placeholder="Email ID" required />
+      <input type="password" id="loginPass" placeholder="Password" required />
+
+      <button class="login-btn" type="submit">Login</button>
+
+      <div class="account-row">
+        <span class="left-text">DON'T HAVE AN ACCOUNT?</span>
+        <span class="create-link" onclick="goCategory()">CREATE AN ACCOUNT</span>
+      </div>
+    </form>
+
+    <!-- CATEGORY WINDOW -->
+    <div class="category-window screen">
+      <div class="category-item" onclick="goSignupChoice('Hostel')">
+        <img src="edu.png" />
+        <h3>HOSTEL</h3>
+      </div>
+
+      <div class="category-item" onclick="goSignupChoice('Hospital')">
+        <img src="hospital.png" />
+        <h3>HOSPITAL</h3>
+      </div>
+
+      <div class="category-item" onclick="goSignupChoice('Flat')">
+        <img src="flat.png" />
+        <h3>FLAT</h3>
+      </div>
     </div>
+
+    <!-- SIGNUP CHOICE -->
+    <div class="signup-choice screen">
+      <button class="buttonsignup" onclick="goFinalSignup('user')">Signup as Student</button>
+      <button class="buttonsignup" onclick="goFinalSignup('admin')">Signup as Admin</button>
+    </div>
+
+    <!-- SLIDESHOW -->
+    <div class="slideshow-container screen">
+      <div class="slide fade"><img src="ex.png" /></div>
+      <div class="slide fade"><img src="ex1.png" /></div>
+      <div class="slide fade"><img src="ex3.png" /></div>
+
+      <!-- Controls -->
+      <a class="prev" onclick="plusSlides(-1)">&#10094;</a>
+      <a class="next" onclick="plusSlides(1)">&#10095;</a>
+    </div>
+
+    <!-- FINAL SIGNUP FORM -->
+    <form class="signup-form screen" onsubmit="handleSignup(event)">
+      <div class="divider-line"></div>
+
+      <input type="text" id="regName" placeholder="User name" required />
+      <input type="email" id="regEmail" placeholder="Email ID" required />
+      <input type="password" id="regPass" placeholder="Password" required />
+      <input type="password" id="regPassConf" placeholder="Confirm Password" required />
+
+      <select class="gender-select" id="regGender" required>
+        <option disabled selected>Select Gender</option>
+        <option>Male</option>
+        <option>Female</option>
+        <option>Other</option>
+      </select>
+
+      <input type="date" class="dob-input" id="regDob" required />
+
+      <button type="submit" class="create-btn">Create Account</button>
+    </form>
+
+
+
   </div>
+
+  <script src="index.js"></script>
 </body>
 
 </html>
