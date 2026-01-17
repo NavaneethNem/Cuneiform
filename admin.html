@@ -1,12 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cuneiform | Admin Dashboard</title>
     <link rel="stylesheet" href="style.css">
 </head>
-<body id="admin"> <div class="app-container">
+
+<body id="admin">
+    <div class="app-container">
         <aside class="sidebar">
             <div class="logo">Cuneiform Admin</div>
             <nav>
@@ -28,9 +31,18 @@
 
             <section id="dashboard-view" class="view">
                 <div class="stats-grid">
-                    <div class="stat-card"><h3>Total</h3><p id="stat-total">0</p></div>
-                    <div class="stat-card"><h3>Resolved</h3><p id="stat-resolved">0</p></div>
-                    <div class="stat-card"><h3>Pending</h3><p id="stat-pending">0</p></div>
+                    <div class="stat-card">
+                        <h3>Total</h3>
+                        <p id="stat-total">0</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Resolved</h3>
+                        <p id="stat-resolved">0</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3>Pending</h3>
+                        <p id="stat-pending">0</p>
+                    </div>
                 </div>
                 <h3>Recent Activity</h3>
                 <div id="recent-list" class="complaint-list"></div>
@@ -72,4 +84,5 @@
     <button class="theme-toggle" onclick="toggleTheme()" title="Toggle Dark Mode">🌙</button>
     <script src="script.js"></script>
 </body>
+
 </html>

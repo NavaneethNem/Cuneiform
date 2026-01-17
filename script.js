@@ -8,7 +8,7 @@ function initTheme() {
 function toggleTheme() {
     const current = document.documentElement.getAttribute('data-theme');
     const target = current === 'dark' ? 'light' : 'dark';
-    
+
     document.documentElement.setAttribute('data-theme', target);
     localStorage.setItem('unity_theme', target);
     updateToggleIcon(target);
@@ -16,24 +16,24 @@ function toggleTheme() {
 
 function updateToggleIcon(theme) {
     const btn = document.querySelector('.theme-toggle');
-    if(btn) btn.innerText = theme === 'dark' ? '☀️' : '🌙';
+    if (btn) btn.innerText = theme === 'dark' ? '☀️' : '🌙';
 }
 
 // Run immediately
 initTheme();
 // --- 1. INITIALIZATION & FAKE DATA ---
 const defaultComplaints = [
-    { 
-        id: 101, 
-        description: "WiFi in the library is extremely slow.", 
-        location: "Library", 
-        category: "IT Support", 
-        status: "Pending", 
-        votes: 45, 
-        vetos: 1, 
-        timestamp: "17/01/2026", 
-        author: "User_123", 
-        isPrivate: false, 
+    {
+        id: 101,
+        description: "WiFi in the library is extremely slow.",
+        location: "Library",
+        category: "IT Support",
+        status: "Pending",
+        votes: 45,
+        vetos: 1,
+        timestamp: "17/01/2026",
+        author: "User_123",
+        isPrivate: false,
         createdByMe: false,
         adminRemark: "",
         comments: [
@@ -41,32 +41,32 @@ const defaultComplaints = [
             { id: 2, text: "I think the router is unplugged.", author: "Me", votes: 2, isMyComment: true }
         ]
     },
-    { 
-        id: 102, 
-        description: "My roommate is playing drums at 2 AM.", 
-        location: "Block A - Room 101", 
-        category: "General", 
-        status: "Rejected", 
-        votes: 0, 
-        vetos: 0, 
-        timestamp: "16/01/2026", 
-        author: "Anonymous", 
-        isPrivate: true, 
+    {
+        id: 102,
+        description: "My roommate is playing drums at 2 AM.",
+        location: "Block A - Room 101",
+        category: "General",
+        status: "Rejected",
+        votes: 0,
+        vetos: 0,
+        timestamp: "16/01/2026",
+        author: "Anonymous",
+        isPrivate: true,
         createdByMe: true,
         adminRemark: "Personal disputes should be handled by the Warden, not this platform.",
         comments: []
     },
-    { 
-        id: 103, 
-        description: "Stray dog near the main gate is chasing students.", 
-        location: "Main Gate", 
-        category: "Security", 
-        status: "Resolved", 
-        votes: 89, 
-        vetos: 2, 
-        timestamp: "15/01/2026", 
-        author: "User_555", 
-        isPrivate: false, 
+    {
+        id: 103,
+        description: "Stray dog near the main gate is chasing students.",
+        location: "Main Gate",
+        category: "Security",
+        status: "Resolved",
+        votes: 89,
+        vetos: 2,
+        timestamp: "15/01/2026",
+        author: "User_555",
+        isPrivate: false,
         createdByMe: false,
         adminRemark: "Animal control has been notified.",
         comments: []
@@ -75,7 +75,7 @@ const defaultComplaints = [
 
 let complaints = JSON.parse(localStorage.getItem('unity_complaints')) || [];
 if (complaints.length === 0) {
-    complaints = defaultComplaints; 
+    complaints = defaultComplaints;
     localStorage.setItem('unity_complaints', JSON.stringify(complaints));
 }
 
@@ -97,7 +97,7 @@ const keywords = {
 
 document.addEventListener("DOMContentLoaded", function () {
     renderComplaints();
-    
+
     // Setup Settings if on admin page
     if (document.getElementById('orgName')) {
         document.getElementById('orgName').value = settings.orgName;
@@ -117,54 +117,72 @@ function autoCategorize(text) {
 function showView(viewName) {
     document.querySelectorAll('.view').forEach(v => v.style.display = 'none');
     const view = document.getElementById(`${viewName}-view`);
-    if(view) view.style.display = 'block';
-    
+    if (view) view.style.display = 'block';
+
     document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
     event.target.classList.add('active');
-    
+
     let title = viewName.charAt(0).toUpperCase() + viewName.slice(1);
-    if(viewName === 'my-complaints') title = "My Complaints";
+    if (viewName === 'my-complaints') title = "My Complaints";
     document.getElementById('view-title').innerText = title;
-    
-    if(['dashboard', 'complaints', 'my-complaints'].includes(viewName)) renderComplaints();
-    if(viewName === 'analytics') renderAnalytics();
+
+    if (['dashboard', 'complaints', 'my-complaints'].includes(viewName)) renderComplaints();
+    if (viewName === 'analytics') renderAnalytics();
 }
 
 // --- 4. COMPLAINT ACTIONS ---
-if(document.getElementById('complaintForm')) {
-    document.getElementById('complaintForm').onsubmit = function(e) {
+if (document.getElementById('complaintForm')) {
+    document.getElementById('complaintForm').onsubmit = function (e) {
         e.preventDefault();
         const desc = document.getElementById('compDesc').value;
         const isAnon = document.getElementById('compAnon').checked;
         const isPrivate = document.getElementById('compPrivate').checked;
-        
-        const newComplaint = {
-            id: Date.now(),
-            description: desc,
-            location: document.getElementById('compLocation').value,
-            anonymous: isAnon,
-            isPrivate: isPrivate,
-            createdByMe: true,
-            category: autoCategorize(desc),
-            status: 'Submitted',
-            votes: 0,
-            vetos: 0,
-            timestamp: new Date().toLocaleDateString(),
-            author: isAnon ? "Anonymous" : "Me",
-            adminRemark: "",
-            comments: []
+        const fileInput = document.getElementById('compMedia');
+        const file = fileInput.files[0];
+
+        const processComplaint = (attachments = []) => {
+            const newComplaint = {
+                id: Date.now(),
+                description: desc,
+                location: document.getElementById('compLocation').value,
+                anonymous: isAnon,
+                isPrivate: isPrivate,
+                createdByMe: true,
+                category: autoCategorize(desc),
+                status: 'Submitted',
+                votes: 0,
+                vetos: 0,
+                timestamp: new Date().toLocaleDateString(),
+                author: isAnon ? "Anonymous" : "Me",
+                adminRemark: "",
+                comments: [],
+                attachments: attachments
+            };
+
+            complaints.unshift(newComplaint);
+            saveData();
+            closeModal('complaintModal');
+            document.getElementById('complaintForm').reset();
+
+            if (isPrivate) alert("Private Complaint Sent! Only Admins can see this.");
+            else alert("Complaint filed successfully.");
+
+            renderComplaints();
         };
 
-        complaints.unshift(newComplaint);
-        saveData();
-        closeModal('complaintModal');
-        this.reset();
-        
-        // UX FEEDBACK
-        if(isPrivate) alert("Private Complaint Sent! Only Admins can see this.");
-        else alert("Complaint filed successfully.");
-        
-        renderComplaints();
+        if (file) {
+            if (file.size > 500 * 1024) {
+                alert("File too large! Max 500KB allowed for this prototype.");
+                return;
+            }
+            const reader = new FileReader();
+            reader.onload = function (evt) {
+                processComplaint([evt.target.result]);
+            };
+            reader.readAsDataURL(file);
+        } else {
+            processComplaint([]);
+        }
     };
 }
 
@@ -172,7 +190,7 @@ if(document.getElementById('complaintForm')) {
 function renderComplaints() {
     const isDashboard = document.getElementById('dashboard-view').style.display !== 'none';
     const isMyComplaints = document.getElementById('my-complaints-view') && document.getElementById('my-complaints-view').style.display !== 'none';
-    
+
     let containerId;
     if (isDashboard) containerId = 'recent-list';
     else if (isMyComplaints) containerId = 'my-complaint-list';
@@ -182,7 +200,7 @@ function renderComplaints() {
     if (!container) return;
 
     let displayList = complaints.filter(c => {
-        if (isMyComplaints) return c.createdByMe === true; 
+        if (isMyComplaints) return c.createdByMe === true;
         if (currentRole === 'admin') return true;
         if (!c.isPrivate) return true;
         if (c.isPrivate && c.createdByMe) return true;
@@ -200,14 +218,24 @@ function renderComplaints() {
             
             <h4 style="margin: 10px 0;">${c.description}</h4>
             
+            ${c.attachments && c.attachments.length > 0 ? `
+                <div class="media-grid">
+                    ${c.attachments.map(src =>
+        src.startsWith('data:video')
+            ? `<video src="${src}" controls class="media-attachment"></video>`
+            : `<img src="${src}" class="media-attachment" onclick="window.open('${src}')" title="Click to view full size">`
+    ).join('')}
+                </div>
+            ` : ''}
+            
             ${c.adminRemark ? `<div class="admin-remark-box"><b>👮 Admin Remark:</b> ${c.adminRemark}</div>` : ''}
 
             <p style="font-size: 14px; opacity: 0.8;">📍 ${c.location} | 👤 ${c.author} | 📅 ${c.timestamp}</p>
             
             <div class="vote-btns">
                 ${!c.isPrivate ? `<button class="vote-btn" onclick="vote(${c.id}, 'up')">👍 ${c.votes}</button>
-                                  <button class="vote-btn" onclick="vote(${c.id}, 'down')">👎 ${c.vetos}</button>` 
-                               : '<small style="opacity:0.7">Votes disabled for private issues</small>'}
+                                  <button class="vote-btn" onclick="vote(${c.id}, 'down')">👎 ${c.vetos}</button>`
+            : '<small style="opacity:0.7">Votes disabled for private issues</small>'}
                 
                 <button class="vote-btn" onclick="toggleComments(${c.id})" style="margin-left: 10px;">💬 Comments (${(c.comments || []).length})</button>
 
@@ -279,11 +307,11 @@ function addComment(complaintId) {
     saveData();
     renderComplaints();
     // Re-open the comment section after render
-    setTimeout(() => toggleComments(complaintId), 50); 
+    setTimeout(() => toggleComments(complaintId), 50);
 }
 
 function deleteComment(complaintId, commentId) {
-    if(!confirm("Delete this comment?")) return;
+    if (!confirm("Delete this comment?")) return;
     const comp = complaints.find(c => c.id === complaintId);
     comp.comments = comp.comments.filter(c => c.id !== commentId);
     saveData();
@@ -294,7 +322,7 @@ function deleteComment(complaintId, commentId) {
 function voteComment(complaintId, commentId, type) {
     const comp = complaints.find(c => c.id === complaintId);
     const comment = comp.comments.find(c => c.id === commentId);
-    if(type === 'up') comment.votes++;
+    if (type === 'up') comment.votes++;
     else comment.votes--;
     saveData();
     renderComplaints();
@@ -307,18 +335,18 @@ function updateStatus(id, newStatus) {
     // MANDATORY REMARK FOR REJECTION
     if (newStatus === "Rejected") {
         const reason = prompt("⚠️ REJECTION REASON REQUIRED:\nPlease explain why this complaint is being rejected.");
-        
+
         if (!reason || reason.trim() === "") {
             alert("❌ Action Cancelled: You must provide a reason to reject a complaint.");
             renderComplaints(); // Reset dropdown
             return;
         }
         comp.adminRemark = reason;
-    } 
+    }
     // OPTIONAL REMARK FOR OTHER STATUS
     else if (currentRole === 'admin' && confirm("Do you want to add an admin remark/note?")) {
-         const note = prompt("Enter admin remark:");
-         if(note) comp.adminRemark = note;
+        const note = prompt("Enter admin remark:");
+        if (note) comp.adminRemark = note;
     }
 
     comp.status = newStatus;
@@ -328,16 +356,16 @@ function updateStatus(id, newStatus) {
 
 function vote(id, type) {
     const comp = complaints.find(c => c.id === id);
-    if(type === 'up') comp.votes++;
+    if (type === 'up') comp.votes++;
     else comp.vetos++;
     saveData();
     renderComplaints();
 }
 
 function getStatusColor(status) {
-    if(status === 'Resolved') return '#22c55e';
-    if(status === 'Rejected') return '#ef4444';
-    if(status === 'In Progress') return '#3b82f6';
+    if (status === 'Resolved') return '#22c55e';
+    if (status === 'Rejected') return '#ef4444';
+    if (status === 'In Progress') return '#3b82f6';
     return '#f59e0b'; // Pending
 }
 
@@ -351,7 +379,7 @@ function filterComplaints() {
     const query = document.getElementById('searchInput').value.toLowerCase();
     const cat = document.getElementById('filterCategory').value;
     const container = document.getElementById('full-complaint-list');
-    
+
     const displayList = complaints.filter(c => {
         if (currentRole !== 'admin' && c.isPrivate && !c.createdByMe) return false;
         const matchesText = c.description.toLowerCase().includes(query);
@@ -366,13 +394,14 @@ function filterComplaints() {
             ${c.isPrivate ? '<span class="badge" style="background:#d946ef; color:white;">🔒 Private</span>' : ''}
             <span class="badge" style="float:right; background:${getStatusColor(c.status)}; color:white;">${c.status}</span>
             <h4>${c.description}</h4>
+            ${c.attachments && c.attachments.length > 0 ? '<small>📎 Has Attachment</small>' : ''}
             <p><small>📍 ${c.location} | 👤 ${c.author} | 📅 ${c.timestamp}</small></p>
              <div class="vote-btns">
                 ${!c.isPrivate ? `<button class="vote-btn">👍 ${c.votes}</button>` : ''}
              </div>
         </div>
     `).join('');
-    
+
     container.innerHTML = html;
 }
 
@@ -386,15 +415,15 @@ function updateStats() {
 function renderAnalytics() {
     const categories = ["Maintenance", "IT Support", "Security", "Hygiene"];
     const container = document.getElementById('chart-bars');
-    if(!container) return;
+    if (!container) return;
     container.innerHTML = '';
-    
+
     categories.forEach(cat => {
         const count = complaints.filter(c => c.category === cat).length;
         const height = (count / (complaints.length || 1)) * 100;
         const bar = document.createElement('div');
         bar.className = 'bar';
-        bar.style.height = `${Math.max(height, 10)}%`; 
+        bar.style.height = `${Math.max(height, 10)}%`;
         bar.setAttribute('data-label', `${cat} (${count})`);
         container.appendChild(bar);
     });
@@ -404,10 +433,10 @@ function saveData() {
     localStorage.setItem('unity_complaints', JSON.stringify(complaints));
 }
 
-function openModal(id) { 
+function openModal(id) {
     document.getElementById(id).style.display = 'block';
     const locSelect = document.getElementById('compLocation');
-    if(locSelect) locSelect.innerHTML = settings.locations.map(l => `<option value="${l}">${l}</option>`).join('');
+    if (locSelect) locSelect.innerHTML = settings.locations.map(l => `<option value="${l}">${l}</option>`).join('');
 }
 
 function closeModal(id) { document.getElementById(id).style.display = 'none'; }
@@ -419,8 +448,8 @@ function saveSettings() {
     alert("Settings Saved!");
 }
 
-if(document.getElementById('compDesc')){
-    document.getElementById('compDesc').onkeyup = function() {
+if (document.getElementById('compDesc')) {
+    document.getElementById('compDesc').onkeyup = function () {
         const cat = autoCategorize(this.value);
         document.querySelector('#categoryHint span').innerText = cat;
     };
