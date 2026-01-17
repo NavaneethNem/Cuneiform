@@ -13,7 +13,13 @@ const keywords = {
     "Security": ["camera", "gate", "guard", "stranger", "theft", "key"],
     "Hygiene": ["dirty", "trash", "smell", "cleaning", "washroom", "dust"]
 };
+document.addEventListener("DOMContentLoaded", function () {
 
+  if (document.body.id === "admin") {
+    // ✅ runs ONLY on admin.html
+    toggleRole();
+  }
+});
 function autoCategorize(text) {
     text = text.toLowerCase();
     for (let category in keywords) {
@@ -35,7 +41,7 @@ function showView(viewName) {
 }
 
 function toggleRole() {
-    currentRole = document.getElementById('roleToggle').value;
+    currentRole = "admin";
     renderComplaints();
 }
 
