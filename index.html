@@ -19,12 +19,31 @@
     <h1>CUNEIFORM</h1>
     <p>Universal Complaint Platform</p>
 
-    <!-- LOGIN FORM (DEFAULT) -->
+    <!-- SLIDESHOW (LEFT SIDE | Hidden until signup-active) -->
+    <div class="slideshow-container">
+      <div class="slide fade">
+        <img src="ex.png" />
+      </div>
+
+      <div class="slide fade">
+        <img src="ex1.png" />
+      </div>
+
+      <div class="slide fade">
+        <img src="ex3.png" />
+      </div>
+
+      <!-- Controls -->
+      <a class="prev" onclick="plusSlides(-1)">&#10094;</a>
+      <a class="next" onclick="plusSlides(1)">&#10095;</a>
+    </div>
+
+    <!-- LOGIN FORM (DEFAULT STATE) -->
     <form class="login-form">
       <input type="email" placeholder="Email ID" required />
       <input type="password" placeholder="Password" required />
 
-      <button class="login-form" type="submit">Login</button>
+      <button class="login-btn" type="submit">Login</button>
 
       <div class="account-row">
         <span class="left-text">DON'T HAVE AN ACCOUNT?</span>
@@ -32,19 +51,18 @@
       </div>
     </form>
 
-    <!-- SIGNUP CHOICE -->
+    <!-- SIGNUP CHOICE (STUDENT / ADMIN) -->
     <div class="button1 signup-choice">
-      <button class= "buttonsignup" onclick="openSignup()">Signup as Student</button>
-      <button class= "buttonsignup" onclick="openSignup()">Signup as Admin</button>
+      <button class="buttonsignup" onclick="openSignup()">Signup as Student</button>
+      <button class="buttonsignup" onclick="openSignup()">Signup as Admin</button>
     </div>
 
-    <!-- SIGNUP FORM -->
+    <!-- FINAL SIGNUP FORM -->
     <form class="signup-form">
       <div class="divider-line"></div>
-
       <input type="email" placeholder="Email ID" required />
       <input type="password" placeholder="Password" required />
-      <button type="submit">Create Account</button>
+      <button type="submit" class="create-btn">Create Account</button>
     </form>
 
   </div>
