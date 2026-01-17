@@ -157,7 +157,9 @@ if (document.getElementById('complaintForm')) {
                 location: document.getElementById('compLocation').value,
                 anonymous: isAnon,
                 isPrivate: isPrivate,
-                createdByMe: true, // Temp for now, real auth will fix this
+                anonymous: isAnon,
+                isPrivate: isPrivate,
+                userId: DataService.getUser()?.uid, // Store UID for ownership checks
                 category: autoCategorize(desc),
                 category: autoCategorize(desc),
                 status: 'Submitted',
@@ -211,11 +213,16 @@ function renderComplaints() {
     const container = document.getElementById(containerId);
     if (!container) return;
 
+    const currentUser = DataService.getUser();
+    const currentUid = currentUser ? currentUser.uid : null;
+
     let displayList = complaints.filter(c => {
-        if (isMyComplaints) return c.createdByMe === true;
+        const isOwner = c.userId === currentUid;
+
+        if (isMyComplaints) return isOwner;
         if (currentRole === 'admin') return true;
         if (!c.isPrivate) return true;
-        if (c.isPrivate && c.createdByMe) return true;
+        if (c.isPrivate && isOwner) return true;
         return false;
     });
 
