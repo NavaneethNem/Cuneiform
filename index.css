@@ -1,219 +1,73 @@
-/* RESET */
-/* http://meyerweb.com/eric/tools/css/reset/ */
-html,
-body,
-div,
-span,
-applet,
-object,
-iframe,
-h1,
-h2,
-h3,
-h4,
-h5,
-h6,
-p,
-blockquote,
-pre,
-a,
-abbr,
-acronym,
-address,
-big,
-cite,
-code,
-del,
-dfn,
-em,
-img,
-ins,
-kbd,
-q,
-s,
-samp,
-small,
-strike,
-strong,
-sub,
-sup,
-tt,
-var,
-b,
-u,
-i,
-center,
-dl,
-dt,
-dd,
-ol,
-ul,
-li,
-fieldset,
-form,
-label,
-legend,
-table,
-caption,
-tbody,
-tfoot,
-thead,
-tr,
-th,
-td,
-article,
-aside,
-canvas,
-details,
-embed,
-figure,
-figcaption,
-footer,
-header,
-hgroup,
-menu,
-nav,
-output,
-ruby,
-section,
-summary,
-time,
-mark,
-audio,
-video {
-    margin: 0;
-    padding: 0;
-    border: 0;
-    font-size: 100%;
-    font: inherit;
-    vertical-align: baseline;
-}
+/* RESET & BASE */
+html, body, div, span, h1, p, button { margin: 0; padding: 0; border: 0; font-size: 100%; font: inherit; vertical-align: baseline; }
+html { box-sizing: border-box; font-family: 'Open Sans', sans-serif; }
+body { background-color: #8ecae6; display: flex; justify-content: center; align-items: center; min-height: 100vh; position: relative; overflow: hidden; }
 
-article,
-aside,
-details,
-figcaption,
-figure,
-footer,
-header,
-hgroup,
-menu,
-nav,
-section {
-    display: block;
-}
-
-body {
-    line-height: 1;
-}
-
-ol,
-ul {
-    list-style: none;
-}
-
-blockquote,
-q {
-    quotes: none;
-}
-
-blockquote:before,
-blockquote:after,
-q:before,
-q:after {
-    content: '';
-}
-
-table {
-    border-collapse: collapse;
-    border-spacing: 0;
-}
-
-/* BASE */
-html {
-    box-sizing: border-box;
-    font-family: 'Open Sans', sans-serif;
-}
-
-body {
-    background-color: #8ecae6;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
-    position: relative;
-}
-
-/* BACKGROUND LAYERS */
+/* BACKGROUND LAYERS - Now Responsive */
 .layer {
     position: absolute;
-    width: 700px;
+    width: 80%; /* Responsive width */
+    max-width: 700px;
     height: 300px;
     border-radius: 10px;
     z-index: 0;
 }
 
-.layer-3 {
-    background-color: #bfe3f2;
-    transform: scale(1.5) translate(-0px, -0px);
-}
-
-.layer-2 {
-    background-color: #d6eff9;
-    transform: scale(1.35) translate(-0px, -0px);
-}
-
-.layer-1 {
-    background-color: #eaf7fd;
-    transform: scale(1.2) translate(-0px, -0px);
-}
+.layer-3 { background-color: #bfe3f2; transform: scale(1.5); }
+.layer-2 { background-color: #d6eff9; transform: scale(1.35); }
+.layer-1 { background-color: #eaf7fd; transform: scale(1.2); }
 
 /* MAIN CARD */
 .table {
     background-color: white;
     border-radius: 10px;
-    padding: 15px 25px;
-    width: 100%;
-    max-width: 700px;
-    height: 300px;
+    padding: 30px 25px;
+    width: 90%;
+    max-width: 600px;
+    height: auto;
+    min-height: 300px;
     display: flex;
     flex-direction: column;
+    align-items: center; /* Center content */
     text-align: center;
     text-transform: uppercase;
     border: 1px solid rgb(6, 6, 6);
     z-index: 5;
     position: relative;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.1);
 }
 
 h1 {
-    font-family: Georgia, Times, Times New Roman, serif;
-    font-size: 80px;
+    font-family: Georgia, serif;
+    font-size: clamp(40px, 8vw, 80px); /* Responsive font size */
+    margin-bottom: 10px;
 }
 
-p {
-    font-size: 20px;
+p { font-size: 18px; margin-bottom: 40px; }
+
+.button1 {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    align-items: center;
+    gap: 15px;
 }
 
 button {
     border: 1px solid #9dd1ff;
     border-radius: 10px;
-    color: #000000;
-    padding: 15px 35px;
-    background-color: rgb(242, 242, 242);
+    color: #000;
+    padding: 15px 0;
+    background-color: #f2f2f2;
     font-weight: 600;
     letter-spacing: 2px;
-    width: 500px;
-    margin-left: 90px;
-    margin-top: 10px;
-    transition: background-color 200ms ease-in-out;
+    width: 80%; /* Button width relative to card */
+    cursor: pointer;
+    transition: all 200ms ease-in-out;
 }
 
 button:hover {
     background-color: #269aff;
-}
-
-.button1 {
-    margin-top: 50px;
-    display: flex;
-    flex-direction: column;
+    color: white;
+    transform: translateY(-2px);
 }

@@ -3,37 +3,29 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cuneiform | Universal Complaint Platform</title>
+    <title>Cuneiform | Student Dashboard</title>
     <link rel="stylesheet" href="style.css">
 </head>
-<body>
-    <div class="app-container">
-        <!-- Sidebar Navigation -->
+<body id="user"> <div class="app-container">
         <aside class="sidebar">
             <div class="logo">Cuneiform</div>
             <nav>
                 <button onclick="showView('dashboard')" class="nav-btn active">Dashboard</button>
                 <button onclick="showView('complaints')" class="nav-btn">Complaints</button>
                 <button onclick="showView('analytics')" class="nav-btn">Analytics</button>
-                <!-- <button onclick="showView('settings')" class="nav-btn">Organization Setup</button> -->
             </nav>
-            <!-- <div class="user-profile">
-                <select id="roleToggle" onchange="toggleRole()">
-                    <option value="user">User View</option>
-                    <option value="admin">Admin View</option>
-                </select>
-            </div> -->
+            <div class="user-profile">
+                <p style="font-size: 0.9rem; color: #666;">Logged in as: <b>Student</b></p>
+                <a href="index.html" style="font-size: 0.8rem; text-decoration: none; color: red;">Logout</a>
+            </div>
         </aside>
 
-        <!-- Main Content Area -->
         <main class="content">
-            <!-- Header -->
             <header>
                 <h1 id="view-title">Dashboard</h1>
                 <button class="btn-primary" onclick="openModal('complaintModal')">+ New Complaint</button>
             </header>
 
-            <!-- Dashboard View -->
             <section id="dashboard-view" class="view">
                 <div class="stats-grid">
                     <div class="stat-card"><h3>Total</h3><p id="stat-total">0</p></div>
@@ -44,7 +36,6 @@
                 <div id="recent-list" class="complaint-list"></div>
             </section>
 
-            <!-- Complaints View -->
             <section id="complaints-view" class="view" style="display:none;">
                 <div class="filters">
                     <input type="text" id="searchInput" placeholder="Search issues..." onkeyup="filterComplaints()">
@@ -55,33 +46,20 @@
                         <option value="Security">Security</option>
                         <option value="Hygiene">Hygiene</option>
                     </select>
+                    <button class="btn-secondary" onclick="sortByVotes()">🔥 Sort by Votes</button>
                 </div>
                 <div id="full-complaint-list" class="complaint-list"></div>
             </section>
 
-            <!-- Analytics View -->
             <section id="analytics-view" class="view" style="display:none;">
                 <div class="chart-container">
                     <h3>Resolution Efficiency</h3>
                     <div id="chart-bars" class="bar-chart"></div>
                 </div>
             </section>
-
-            <!-- Settings View -->
-            <!-- <section id="settings-view" class="view" style="display:none;">
-                <div class="card">
-                    <h3>Org Configuration</h3>
-                    <label>Organization Name</label>
-                    <input type="text" id="orgName" placeholder="e.g. Green Valley Residency">
-                    <label>Building/Floor Logic (Comma separated)</label>
-                    <input type="text" id="orgLogic" placeholder="Wing A, Wing B, Floor 1, Floor 2">
-                    <button class="btn-primary" onclick="saveSettings()">Save Configuration</button>
-                </div>
-            </section> -->
         </main>
     </div>
 
-    <!-- Modal for New Complaint -->
     <div id="complaintModal" class="modal">
         <div class="modal-content">
             <span class="close" onclick="closeModal('complaintModal')">&times;</span>
@@ -97,7 +75,6 @@
             </form>
         </div>
     </div>
-
     <script src="script.js"></script>
 </body>
 </html>
