@@ -2,35 +2,70 @@ const supabaseUrl = 'https://yqmazmbpbbqsryynpwfo.supabase.co'
 const supabaseAnonKey = 'sb_publishable_4mdNSzXhf6_u76D6ADhSuQ_0spj34kD'
 
 const supabaseClient = supabase.createClient(
-supabaseUrl,
-supabaseAnonKey
+  supabaseUrl,
+  supabaseAnonKey
 )
 
-async function signUp() {
-const { data, error } = await supabaseClient.auth.signUp({
-    email: 'user@email.com',
-    password: 'password123',
+/* =========================
+   SIGNUP FORM
+========================= */
+const signupForm = document.querySelector('.signup-form')
+const signupEmail = signupForm.querySelector('input[type="email"]')
+const signupPassword = signupForm.querySelector('input[type="password"]')
+
+signupForm.addEventListener('submit', async (e) => {
+  e.preventDefault()
+
+  const { data, error } = await supabaseClient.auth.signUp({
+    email: signupEmail.value,
+    password: signupPassword.value
+  })
+
+  console.log('SIGNUP RESULT:', data, error)
+
+  if (error) {
+    alert(error.message)
+  } else {
+    alert('Account created')
+  }
 })
 
-if (error) alert(error.message)
-else console.log(data.user)
-}
+/* =========================
+   LOGIN FORM
+========================= */
+const loginForm = document.querySelector('.login-form')
+const loginEmail = loginForm.querySelector('input[type="email"]')
+const loginPassword = loginForm.querySelector('input[type="password"]')
 
-async function signIn() {
-const { data, error } = await supabaseClient.auth.signInWithPassword({
-    email: 'user@email.com',
-    password: 'password123',
+loginForm.addEventListener('submit', async (e) => {
+  e.preventDefault()
+
+  const { data, error } = await supabaseClient.auth.signInWithPassword({
+    email: loginEmail.value,
+    password: loginPassword.value
+  })
+
+  console.log('LOGIN RESULT:', data, error)
+
+  if (error) {
+    alert(error.message)
+  } else {
+    alert('Logged in')
+  }
 })
 
-if (error) alert(error.message)
-else console.log('Logged in', data.user)
-}
-
-const { data } = await supabaseClient.auth.getUser()
-console.log(data.user)
-
+/* =========================
+   AUTH STATE
+========================= */
 supabaseClient.auth.onAuthStateChange((event, session) => {
-console.log(event)   // SIGNED_IN, SIGNED_OUT
-console.log(session)
-})
+  console.log(event)
+  console.log(session)
 
+  if (event === 'SIGNED_IN' && session) {
+    console.log('User signed in:', session.user)
+  }
+
+  if (!session) {
+    console.log('No user signed in')
+  }
+})

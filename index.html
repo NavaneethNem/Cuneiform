@@ -3,6 +3,8 @@
 <head>
   <title>CUNEIFORM | Login</title>
   <link rel="stylesheet" href="index.css">
+  <link rel="icon" href="data:,">
+
 </head>
 <body>
 
@@ -40,7 +42,7 @@
       <input type="email" placeholder="Email ID" required />
       <input type="password" placeholder="Password" required />
 
-      <button class="login-btn" type="submit">Login</button>
+      <button class="login-btn" type="submit" id="login">Login</button>
 
       <div class="account-row">
         <span class="left-text">DON'T HAVE AN ACCOUNT?</span>
@@ -59,12 +61,13 @@
       <div class="divider-line"></div>
       <input type="email" placeholder="Email ID" required />
       <input type="password" placeholder="Password" required />
-      <button type="submit" class="create-btn">Create Account</button>
+      <button type="submit" class="create-btn" id="signup">Create Account</button>
     </form>
 
   </div>
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
   <script src="sup.js"></script>
-  <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+
 
   <script src="index.js"></script>
 </body>
