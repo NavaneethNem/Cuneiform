@@ -47,7 +47,13 @@ window.handleSignup = async function (e) {
     e.preventDefault();
     const name = document.getElementById('regName').value;
     const email = document.getElementById('regEmail').value;
-    const pass = "password123"; // Simplification: Hardcoded pass for this UI flow as field is missing
+    const pass = document.getElementById('regPass').value;
+    const passConf = document.getElementById('regPassConf').value;
+
+    if (pass !== passConf) {
+        alert("Passwords do not match!");
+        return;
+    }
 
     const result = await DataService.signup(email, pass);
 
