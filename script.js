@@ -1,9 +1,9 @@
 // --- 1. INITIALIZATION & FAKE DATA ---
 const defaultComplaints = [
-    { id: 101, description: "WiFi in the library is extremely slow.", location: "Library", category: "IT Support", status: "Pending", votes: 45, vetos: 1, timestamp: "17/01/2026", author: "User_123", isPrivate: false },
-    { id: 102, description: "My roommate is playing drums at 2 AM.", location: "Block A - Room 101", category: "General", status: "Resolved", votes: 0, vetos: 0, timestamp: "16/01/2026", author: "Anonymous", isPrivate: true }, // Private Example
-    { id: 103, description: "Stray dog near the main gate is chasing students.", location: "Main Gate", category: "Security", status: "Resolved", votes: 89, vetos: 2, timestamp: "15/01/2026", author: "User_555", isPrivate: false },
-    { id: 104, description: "Water leaking from AC unit.", location: "Floor 2", category: "Maintenance", status: "Pending", votes: 12, vetos: 0, timestamp: "17/01/2026", author: "User_999", isPrivate: false }
+    { id: 101, description: "WiFi in the library is extremely slow.", location: "Library", category: "IT Support", status: "Pending", votes: 45, vetos: 1, timestamp: "17/01/2026", author: "User_123", isPrivate: false, createdByMe: false },
+    { id: 102, description: "My roommate is playing drums at 2 AM.", location: "Block A - Room 101", category: "General", status: "Resolved", votes: 0, vetos: 0, timestamp: "16/01/2026", author: "Anonymous", isPrivate: true, createdByMe: true }, // Example of YOUR private complaint
+    { id: 103, description: "Stray dog near the main gate is chasing students.", location: "Main Gate", category: "Security", status: "Resolved", votes: 89, vetos: 2, timestamp: "15/01/2026", author: "User_555", isPrivate: false, createdByMe: false },
+    { id: 104, description: "Water leaking from AC unit.", location: "Floor 2", category: "Maintenance", status: "Pending", votes: 12, vetos: 0, timestamp: "17/01/2026", author: "Me", isPrivate: false, createdByMe: true } // Example of YOUR public complaint
 ];
 
 let complaints = JSON.parse(localStorage.getItem('unity_complaints')) || [];
@@ -55,9 +55,12 @@ function showView(viewName) {
     document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
     event.target.classList.add('active');
     
-    document.getElementById('view-title').innerText = viewName.charAt(0).toUpperCase() + viewName.slice(1);
+    // Title Logic
+    let title = viewName.charAt(0).toUpperCase() + viewName.slice(1);
+    if(viewName === 'my-complaints') title = "My Complaints";
+    document.getElementById('view-title').innerText = title;
     
-    if(viewName === 'dashboard' || viewName === 'complaints') renderComplaints();
+    if(viewName === 'dashboard' || viewName === 'complaints' || viewName === 'my-complaints') renderComplaints();
     if(viewName === 'analytics') renderAnalytics();
 }
 
@@ -74,7 +77,8 @@ if(document.getElementById('complaintForm')) {
             description: desc,
             location: document.getElementById('compLocation').value,
             anonymous: isAnon,
-            isPrivate: isPrivate, // Store the private status
+            isPrivate: isPrivate,
+            createdByMe: true, // Tag as MINE
             category: autoCategorize(desc),
             status: 'Submitted',
             votes: 0,
@@ -92,30 +96,41 @@ if(document.getElementById('complaintForm')) {
         if(isPrivate) alert("Private Complaint Sent! Only Admins can see this.");
         else alert("Complaint filed successfully.");
         
+        // If user is on "My Complaints" tab, refresh it; otherwise go to Recent
         renderComplaints();
     };
 }
 
 function renderComplaints() {
-    // Determine which container to use
+    // Determine which View is active to select the correct container
     const isDashboard = document.getElementById('dashboard-view').style.display !== 'none';
-    const containerId = isDashboard ? 'recent-list' : 'full-complaint-list';
-    const container = document.getElementById(containerId);
+    const isMyComplaints = document.getElementById('my-complaints-view') && document.getElementById('my-complaints-view').style.display !== 'none';
     
+    let containerId;
+    if (isDashboard) containerId = 'recent-list';
+    else if (isMyComplaints) containerId = 'my-complaint-list';
+    else containerId = 'full-complaint-list';
+
+    const container = document.getElementById(containerId);
     if (!container) return;
 
-    // --- PRIVACY FILTER LOGIC ---
+    // --- FILTERING LOGIC ---
     let displayList = complaints.filter(c => {
+        // FILTER 1: If we are in "My Complaints" tab, ONLY show mine (public OR private)
+        if (isMyComplaints) {
+            return c.createdByMe === true; 
+        }
+
+        // FILTER 2: Standard Global Feed Logic
         // 1. Admin sees everything
         if (currentRole === 'admin') return true;
         
         // 2. User sees Public complaints
         if (!c.isPrivate) return true;
         
-        // 3. User sees their OWN private complaints (Author is 'Me')
-        if (c.isPrivate && c.author === 'Me') return true;
+        // 3. User sees their OWN private complaints in the global feed too
+        if (c.isPrivate && c.createdByMe) return true;
         
-        // 4. Hide everything else (Other people's private complaints)
         return false;
     });
 
@@ -187,22 +202,11 @@ function sortByVotes() {
 function filterComplaints() {
     const query = document.getElementById('searchInput').value.toLowerCase();
     const cat = document.getElementById('filterCategory').value;
-    
-    // We re-use logic by filtering the main Render loop, but here is a quick manual filter
-    // For the demo, simply re-rendering and letting the UI filter is safer, but let's just trigger a re-render
-    // Actually, handling search + privacy together is tricky in a simple function. 
-    // The easiest hack: Just filter the GLOBAL complaints list temporarily for display? 
-    // No, better approach: Just refresh render with search logic inside render?
-    // Let's stick to the previous simple implementation but add search logic to RenderComplaints?
-    // To keep it "Plug and Play" simple:
-    
     const container = document.getElementById('full-complaint-list');
     
     const displayList = complaints.filter(c => {
-        // Privacy Check First
-        if (currentRole !== 'admin' && c.isPrivate && c.author !== 'Me') return false;
+        if (currentRole !== 'admin' && c.isPrivate && !c.createdByMe) return false;
         
-        // Then Search/Category
         const matchesText = c.description.toLowerCase().includes(query);
         const matchesCat = cat === 'all' || c.category === cat;
         return matchesText && matchesCat;
@@ -226,8 +230,6 @@ function filterComplaints() {
 
 // --- 5. ANALYTICS & UTILS ---
 function updateStats() {
-    // Stats should probably count everything for Admin, but maybe hide private ones for users? 
-    // Let's keep it simple: Stats show TOTALS regardless of privacy for the demo.
     document.getElementById('stat-total').innerText = complaints.length;
     document.getElementById('stat-resolved').innerText = complaints.filter(c => c.status === 'Resolved').length;
     document.getElementById('stat-pending').innerText = complaints.filter(c => c.status !== 'Resolved').length;

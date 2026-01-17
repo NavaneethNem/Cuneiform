@@ -12,8 +12,7 @@
             <nav>
                 <button onclick="showView('dashboard')" class="nav-btn active">Dashboard</button>
                 <button onclick="showView('complaints')" class="nav-btn">Complaints</button>
-                <button onclick="showView('analytics')" class="nav-btn">Analytics</button>
-                <button onclick="showView('analytics')" class="nav-btn">My Complaints</button>                
+                <button onclick="showView('my-complaints')" class="nav-btn">My Complaints</button> <button onclick="showView('analytics')" class="nav-btn">Analytics</button>
             </nav>
             <div class="user-profile">
                 <p style="font-size: 0.9rem; color: #666;">Logged in as: <b>Student</b></p>
@@ -52,6 +51,10 @@
                 <div id="full-complaint-list" class="complaint-list"></div>
             </section>
 
+            <section id="my-complaints-view" class="view" style="display:none;">
+                <div id="my-complaint-list" class="complaint-list"></div>
+            </section>
+
             <section id="analytics-view" class="view" style="display:none;">
                 <div class="chart-container">
                     <h3>Resolution Efficiency</h3>
@@ -61,7 +64,7 @@
         </main>
     </div>
 
-<div id="complaintModal" class="modal">
+    <div id="complaintModal" class="modal">
         <div class="modal-content">
             <span class="close" onclick="closeModal('complaintModal')">&times;</span>
             <h2>Submit Complaint</h2>
