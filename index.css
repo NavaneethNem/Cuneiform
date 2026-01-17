@@ -1,53 +1,10 @@
-/* RESET */
-html, body, div, span, applet, object, iframe,
-h1, h2, h3, h4, h5, h6, p, blockquote, pre,
-a, abbr, acronym, address, big, cite, code,
-del, dfn, em, img, ins, kbd, q, s, samp,
-small, strike, strong, sub, sup, tt, var,
-b, u, i, center, dl, dt, dd, ol, ul,
-li, fieldset, form, label, legend, table,
-caption, tbody, tfoot, thead, tr, th, td,
-article, aside, canvas, details, embed,
-figure, figcaption, footer, header, hgroup,
-menu, nav, output, ruby, section, summary,
-time, mark, audio, video {
-    margin: 0;
-    padding: 0;
-    border: 0;
-    font-size: 100%;
-    font: inherit;
-    vertical-align: baseline;
-}
+<<<<<<< Updated upstream
+/* RESET & BASE */
+html, body, div, span, h1, p, button { margin: 0; padding: 0; border: 0; font-size: 100%; font: inherit; vertical-align: baseline; }
+html { box-sizing: border-box; font-family: 'Open Sans', sans-serif; }
+body { background-color: #8ecae6; display: flex; justify-content: center; align-items: center; min-height: 100vh; position: relative; overflow: hidden; }
 
-article, aside, details, figcaption, figure,
-footer, header, hgroup, menu, nav, section {
-    display: block;
-}
-
-body {
-    line-height: 1;
-}
-
-ol, ul {
-    list-style: none;
-}
-
-/* BASE */
-html {
-    box-sizing: border-box;
-    font-family: 'Open Sans', sans-serif;
-}
-
-body {
-    background-color: #8ecae6;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
-    position: relative;
-}
-
-/* BACKGROUND LAYERS */
+/* BACKGROUND LAYERS - Now Responsive */
 .layer {
     position: absolute;
     width: 80%; /* Responsive width */
@@ -55,15 +12,47 @@ body {
     height: 300px;
     border-radius: 10px;
     z-index: 0;
-    transition: all 400ms ease;
+=======
+/* ===============================
+   RESET
+================================ */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Open Sans", sans-serif;
 }
 
-.layer-3 { background-color: #bfe3f2; transform: scale(1.5); }
-.layer-2 { background-color: #d6eff9; transform: scale(1.35); }
-.layer-1 { background-color: #eaf7fd; transform: scale(1.2); }
+body {
+  background: #8ecae6;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  position: relative;
+}
 
-/* MAIN CARD */
+/* ===============================
+   BACKGROUND LAYERS
+================================ */
+.layer {
+  position: absolute;
+  width: 700px;
+  height: 400px;
+  border-radius: 10px;
+  transition: all 0.5s ease;
+>>>>>>> Stashed changes
+}
+
+.layer-1 { background: #eaf7fd; transform: scale(1.2); }
+.layer-2 { background: #d6eff9; transform: scale(1.35); }
+.layer-3 { background: #bfe3f2; transform: scale(1.5); }
+
+/* ===============================
+   MAIN CARD
+================================ */
 .table {
+<<<<<<< Updated upstream
     background-color: white;
     border-radius: 10px;
     padding: 30px 25px;
@@ -79,13 +68,31 @@ body {
     border: 1px solid rgb(6, 6, 6);
     z-index: 5;
     position: relative;
-    transition: all 400ms ease;
-    overflow: hidden;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+=======
+  background: white;
+  border-radius: 10px;
+  border: 1px solid #000;
+  padding: 20px;
+  width: 700px;
+  height: 400px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+  transition: 
+    width 0.6s ease,
+    height 0.6s ease,
+    transform 0.6s ease;
+  z-index: 10;
+>>>>>>> Stashed changes
 }
 
+/* Headings */
 h1 {
-    font-family: Georgia, Times, 'Times New Roman', serif;
-    font-size: 80px;
+<<<<<<< Updated upstream
+    font-family: Georgia, serif;
+    font-size: clamp(40px, 8vw, 80px); /* Responsive font size */
+    margin-bottom: 10px;
 }
 
 p { font-size: 18px; margin-bottom: 40px; }
@@ -98,216 +105,230 @@ p { font-size: 18px; margin-bottom: 40px; }
     gap: 15px;
 }
 
-/* LOGIN FORM */
-.login-form {
-    display: flex;
-    flex-direction: column;
-    margin-top: 8px;
+button {
+    border: 1px solid #9dd1ff;
+    border-radius: 10px;
+    color: #000;
+    padding: 15px 0;
+    background-color: #f2f2f2;
+    font-weight: 600;
+    letter-spacing: 2px;
+    width: 80%; /* Button width relative to card */
+    cursor: pointer;
+    transition: all 200ms ease-in-out;
+}
+
+button:hover {
+    background-color: #269aff;
+    color: white;
+    transform: translateY(-2px);
+=======
+  font-size: 80px;
+  font-family: Georgia, serif;
+}
+
+p {
+  font-size: 18px;
+}
+
+/* ===============================
+   HIDE ALL SCREENS
+================================ */
+.login-form,
+.category-window,
+.signup-choice,
+.signup-form,
+.slideshow-container {
+  display: none;
+}
+
+/* ===============================
+   LOGIN SCREEN
+================================ */
+.state-login .login-form {
+  display: flex;
+  flex-direction: column;
+  margin-top: 10px;
 }
 
 .login-form input {
-    width: 500px;
-    margin: 10px auto;
-    padding: 14px;
-    border-radius: 8px;
-    border: 1px solid #9dd1ff;
+  width: 500px;
+  margin: 10px auto;
+  padding: 14px;
+  border-radius: 8px;
+  border: 1px solid #9dd1ff;
 }
 
 .login-form button {
-    width: 500px;
-    margin: 10px auto 0;
-    padding: 14px 20px;
-    border-radius: 10px;
-    border: 2px solid #0077ff;
-    background-color: #e6f1ff;
-    color: #003b99;
-    font-size: 15px;
-    font-weight: 700;
-    letter-spacing: 1px;
-    cursor: pointer;
-    transition: all 200ms ease;
+  width: 500px;
+  margin: 12px auto;
+  padding: 14px;
+  border-radius: 10px;
+  border: 2px solid #0077ff;
+  background: #e6f1ff;
+  font-weight: 700;
+  cursor: pointer;
 }
-
-.login-form button:hover {
+.login-form button:hover{
     background-color: #0077ff;
-    color: white;
 }
 
-.login-form button:active {
-    transform: scale(0.97);
+/* ===============================
+   CATEGORY SCREEN
+================================ */
+.state-category .table {
+  transform: scale(1.03);
 }
 
-/* BOTTOM RIGHT LINKS */
-.account-row {
-    display: flex;
-    justify-content: flex-end;
-    gap: 12px;
-    width: 500px;
-    font-size: 12px;
-    position: absolute;
-    bottom: 2px;
-    right: 25px;
+.state-category .category-window {
+  display: flex;
+  justify-content: center;
+  gap: 60px;
+  margin-top: 50px;
 }
 
-.left-text { opacity: 0.7; color: #000; }
-.create-link {
-    cursor: pointer;
-    color: #d60000;
-    font-weight: 600;
-    text-decoration: underline;
+.category-item {
+  width: 180px;
+  cursor: pointer;
 }
 
-/* SIGNUP CHOICE */
-.signup-choice {
-    display: none;
+.category-item img {
+  width: 120px;
+  height: 120px;
 }
 
-.choose-signup .login-form { display: none; }
-.choose-signup .signup-choice {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 12px;
-    margin-top: 40px;
+.category-item h3 {
+  margin-top: 10px;
+  font-size: 18px;
+}
+
+/* ===============================
+   SIGNUP CHOICE SCREEN
+================================ */
+.state-signup-choice .table {
+  transform: scale(1.05);
+}
+
+.state-signup-choice .signup-choice {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  margin-top: 40px;
+  justify-content: center;
+  position: absolute;
+  right: 90px;
 }
 
 .buttonsignup {
-    width: 500px;
-    padding: 12px 20px;
-    border-radius: 8px;
-    border: 1.5px solid #9dd1ff;
-    background-color: #f8fbff;
-    color: #000;
-    font-size: 14px;
-    letter-spacing: 1px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 200ms ease;
+  width: 500px;
+  padding: 14px;
+  border-radius: 8px;
+  border: 1.5px solid #9dd1ff;
+  background: #f8fbff;
+  font-weight: 600;
+  cursor: pointer;
+}
+.buttonsignup:hover{
+    background-color: #2196f3;
 }
 
-.buttonsignup:hover {
-    background-color: #269aff;
-    color: #fff;
+/* ===============================
+   FINAL SIGNUP SCREEN
+================================ */
+.state-signup-final .table {
+  width: 1000px;
+  height: 620px;
+  transform: scale(1.06);
 }
 
-/* SIGNUP FORM (FINAL WINDOW - RIGHT SIDE) */
-.signup-form {
-    opacity: 0;
-    pointer-events: none;
-    position: absolute;
-    right: 80px;
-    top: 200px;
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-}
+/* Animate background layers */
+.state-signup-final .layer-1 { transform: scale(1.65); height: 420px; }
+.state-signup-final .layer-2 { transform: scale(1.8);  height: 420px; }
+.state-signup-final .layer-3 { transform: scale(2);    height: 420px; }
 
-.signup-form input {
-    width: 350px;
-    padding: 14px;
-    border-radius: 8px;
-    border: 1px solid #9dd1ff;
-}
-
-.signup-form button {
-    width: 150px;
-    padding: 14px;
-    border: 1px solid #9dd1ff;
-    border-radius: 8px;
-    background-color: rgb(199, 238, 241);
-    cursor: pointer;
-    position: absolute;
-    left: 230px;
-    top:120px;
-}
-.signup-form button:hover{
-    background-color: #4c96eb;
-}
-
-.signup-active .signup-form {
-    opacity: 1;
-    pointer-events: auto;
-}
-
-/* EXPANDING CARD + LAYERS FOR FINAL SIGNUP */
-.signup-active .table {
-    height: 620px;
-    max-width: 1000px;
-    width: 100%;
-}
-
-.signup-active .layer-1 { transform: scale(1.65); height: 420px; }
-.signup-active .layer-2 { transform: scale(1.8); height: 420px; }
-.signup-active .layer-3 { transform: scale(2); height: 420px; }
-
-/* ----------------- SLIDESHOW ----------------- */
-.slideshow-container {
-    position: absolute;
-    left: 40px;
-    top: 140px;
-    width: 520px;
-    height: 480px;
-    border-radius: 12px;
-    overflow: hidden;
-    background: #eff9ff;
-    display: none; /* Hidden until signup form activated */
-}
-
-.signup-active .slideshow-container {
-    display: block;
+/* ===============================
+   SLIDESHOW
+================================ */
+.state-signup-final .slideshow-container {
+  display: block;
+  position: absolute;
+  left: 40px;
+  top: 140px;
+  width: 520px;
+  height: 480px;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #eff9ff;
 }
 
 .slide {
-    width: 100%;
-    height: 100%;
-    display: none;
+  display: none;
+  width: 100%;
+  height: 100%;
 }
 
 .slide img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    border-radius: 12px;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
-.fade {
-    animation: fadeEffect 1.2s ease-in-out;
+/* ===============================
+   SIGNUP FORM
+================================ */
+.state-signup-final .signup-form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  position: absolute;
+ 
+  right: 20px;
+  top: 180px;
 }
 
-@keyframes fadeEffect {
-    from { opacity: 0.4; }
-    to { opacity: 1; }
+.signup-form input,
+.signup-form select {
+  width: 350px;
+  padding: 14px;
+  border-radius: 8px;
+  border: 1px solid #9dd1ff;
 }
 
-.prev, .next {
-    cursor: pointer;
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    padding: 10px 14px;
-    color: #fff;
-    font-size: 22px;
-    font-weight: bold;
-    background: rgba(0,0,0,0.35);
-    border-radius: 5px;
-    user-select: none;
+.create-btn {
+  background: #6499cf;
+  color: white;
+  padding: 14px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+}
+.create-btn:hover{
+    background-color: #2196f3;
 }
 
-.prev { left: 5px; }
-.next { right: 5px; }
+/* ===============================
+   SLIDE CONTROLS
+================================ */
+.prev,
+.next {
+  position: absolute;
+  top: 50%;
+  padding: 10px;
+  background: rgba(0,0,0,0.4);
+  color: white;
+  cursor: pointer;
+  transform: translateY(-50%);
+}
 
-.prev:hover, .next:hover {
-    background: rgba(0,0,0,0.55);
+.prev { left: 10px; }
+.next { right: 10px; }
+.account-row .create-link {
+color: red;
+cursor: pointer;
 }
-.signup-active .login-form,
-.choose-signup .login-form {
-    display: none;
-}
-.divider-line {
-    position: absolute;
-   left: -18px;
-   top: -40px;
-     /* moves line downward */
-    height: 460px;  /* adjust this height smaller or bigger */
-    border-left: 1px solid #aad8ff;
+.category-window .category-item:hover{
+    border: 1px solid #8ecae6;
+    border-radius: 8px;
+
+>>>>>>> Stashed changes
 }

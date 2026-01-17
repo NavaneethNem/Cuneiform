@@ -1,9 +1,76 @@
+// --- 0. THEME MANAGEMENT (Must run first) ---
+function initTheme() {
+    const savedTheme = localStorage.getItem('unity_theme') || 'light';
+    document.documentElement.setAttribute('data-theme', savedTheme);
+    updateToggleIcon(savedTheme);
+}
+
+function toggleTheme() {
+    const current = document.documentElement.getAttribute('data-theme');
+    const target = current === 'dark' ? 'light' : 'dark';
+    
+    document.documentElement.setAttribute('data-theme', target);
+    localStorage.setItem('unity_theme', target);
+    updateToggleIcon(target);
+}
+
+function updateToggleIcon(theme) {
+    const btn = document.querySelector('.theme-toggle');
+    if(btn) btn.innerText = theme === 'dark' ? '☀️' : '🌙';
+}
+
+// Run immediately
+initTheme();
 // --- 1. INITIALIZATION & FAKE DATA ---
 const defaultComplaints = [
-    { id: 101, description: "WiFi in the library is extremely slow.", location: "Library", category: "IT Support", status: "Pending", votes: 45, vetos: 1, timestamp: "17/01/2026", author: "User_123", isPrivate: false, createdByMe: false },
-    { id: 102, description: "My roommate is playing drums at 2 AM.", location: "Block A - Room 101", category: "General", status: "Resolved", votes: 0, vetos: 0, timestamp: "16/01/2026", author: "Anonymous", isPrivate: true, createdByMe: true }, // Example of YOUR private complaint
-    { id: 103, description: "Stray dog near the main gate is chasing students.", location: "Main Gate", category: "Security", status: "Resolved", votes: 89, vetos: 2, timestamp: "15/01/2026", author: "User_555", isPrivate: false, createdByMe: false },
-    { id: 104, description: "Water leaking from AC unit.", location: "Floor 2", category: "Maintenance", status: "Pending", votes: 12, vetos: 0, timestamp: "17/01/2026", author: "Me", isPrivate: false, createdByMe: true } // Example of YOUR public complaint
+    { 
+        id: 101, 
+        description: "WiFi in the library is extremely slow.", 
+        location: "Library", 
+        category: "IT Support", 
+        status: "Pending", 
+        votes: 45, 
+        vetos: 1, 
+        timestamp: "17/01/2026", 
+        author: "User_123", 
+        isPrivate: false, 
+        createdByMe: false,
+        adminRemark: "",
+        comments: [
+            { id: 1, text: "Same issue on the 2nd floor!", author: "Student_X", votes: 5, isMyComment: false },
+            { id: 2, text: "I think the router is unplugged.", author: "Me", votes: 2, isMyComment: true }
+        ]
+    },
+    { 
+        id: 102, 
+        description: "My roommate is playing drums at 2 AM.", 
+        location: "Block A - Room 101", 
+        category: "General", 
+        status: "Rejected", 
+        votes: 0, 
+        vetos: 0, 
+        timestamp: "16/01/2026", 
+        author: "Anonymous", 
+        isPrivate: true, 
+        createdByMe: true,
+        adminRemark: "Personal disputes should be handled by the Warden, not this platform.",
+        comments: []
+    },
+    { 
+        id: 103, 
+        description: "Stray dog near the main gate is chasing students.", 
+        location: "Main Gate", 
+        category: "Security", 
+        status: "Resolved", 
+        votes: 89, 
+        vetos: 2, 
+        timestamp: "15/01/2026", 
+        author: "User_555", 
+        isPrivate: false, 
+        createdByMe: false,
+        adminRemark: "Animal control has been notified.",
+        comments: []
+    }
 ];
 
 let complaints = JSON.parse(localStorage.getItem('unity_complaints')) || [];
@@ -55,12 +122,11 @@ function showView(viewName) {
     document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
     event.target.classList.add('active');
     
-    // Title Logic
     let title = viewName.charAt(0).toUpperCase() + viewName.slice(1);
     if(viewName === 'my-complaints') title = "My Complaints";
     document.getElementById('view-title').innerText = title;
     
-    if(viewName === 'dashboard' || viewName === 'complaints' || viewName === 'my-complaints') renderComplaints();
+    if(['dashboard', 'complaints', 'my-complaints'].includes(viewName)) renderComplaints();
     if(viewName === 'analytics') renderAnalytics();
 }
 
@@ -78,13 +144,15 @@ if(document.getElementById('complaintForm')) {
             location: document.getElementById('compLocation').value,
             anonymous: isAnon,
             isPrivate: isPrivate,
-            createdByMe: true, // Tag as MINE
+            createdByMe: true,
             category: autoCategorize(desc),
             status: 'Submitted',
             votes: 0,
             vetos: 0,
             timestamp: new Date().toLocaleDateString(),
-            author: isAnon ? "Anonymous" : "Me"
+            author: isAnon ? "Anonymous" : "Me",
+            adminRemark: "",
+            comments: []
         };
 
         complaints.unshift(newComplaint);
@@ -96,13 +164,12 @@ if(document.getElementById('complaintForm')) {
         if(isPrivate) alert("Private Complaint Sent! Only Admins can see this.");
         else alert("Complaint filed successfully.");
         
-        // If user is on "My Complaints" tab, refresh it; otherwise go to Recent
         renderComplaints();
     };
 }
 
+// --- 5. RENDER LOGIC (UPDATED WITH COMMENTS) ---
 function renderComplaints() {
-    // Determine which View is active to select the correct container
     const isDashboard = document.getElementById('dashboard-view').style.display !== 'none';
     const isMyComplaints = document.getElementById('my-complaints-view') && document.getElementById('my-complaints-view').style.display !== 'none';
     
@@ -114,42 +181,36 @@ function renderComplaints() {
     const container = document.getElementById(containerId);
     if (!container) return;
 
-    // --- FILTERING LOGIC ---
     let displayList = complaints.filter(c => {
-        // FILTER 1: If we are in "My Complaints" tab, ONLY show mine (public OR private)
-        if (isMyComplaints) {
-            return c.createdByMe === true; 
-        }
-
-        // FILTER 2: Standard Global Feed Logic
-        // 1. Admin sees everything
+        if (isMyComplaints) return c.createdByMe === true; 
         if (currentRole === 'admin') return true;
-        
-        // 2. User sees Public complaints
         if (!c.isPrivate) return true;
-        
-        // 3. User sees their OWN private complaints in the global feed too
         if (c.isPrivate && c.createdByMe) return true;
-        
         return false;
     });
 
-    if (isDashboard) displayList = displayList.slice(0, 5); // Limit dashboard to 5
+    if (isDashboard) displayList = displayList.slice(0, 5);
 
+    // ✅ FIXED: Removed inline style, added 'private-card' class
     const html = displayList.map(c => `
-        <div class="complaint-item status-${c.status.toLowerCase().replace(' ', '-')}" style="${c.isPrivate ? 'border-left: 5px solid #d946ef; background: #fdf4ff;' : ''}">
+        <div class="complaint-item status-${c.status.toLowerCase().replace(' ', '-')} ${c.isPrivate ? 'private-card' : ''}">
             <div class="badge">${c.category}</div>
             ${c.isPrivate ? '<span class="badge" style="background:#d946ef; color:white; margin-left:5px;">🔒 Private</span>' : ''}
             <span class="badge" style="float:right; background:${getStatusColor(c.status)}; color:white;">${c.status}</span>
             
             <h4 style="margin: 10px 0;">${c.description}</h4>
-            <p style="font-size: 14px; color: #666;">📍 ${c.location} | 👤 ${c.author} | 📅 ${c.timestamp}</p>
+            
+            ${c.adminRemark ? `<div class="admin-remark-box"><b>👮 Admin Remark:</b> ${c.adminRemark}</div>` : ''}
+
+            <p style="font-size: 14px; opacity: 0.8;">📍 ${c.location} | 👤 ${c.author} | 📅 ${c.timestamp}</p>
             
             <div class="vote-btns">
                 ${!c.isPrivate ? `<button class="vote-btn" onclick="vote(${c.id}, 'up')">👍 ${c.votes}</button>
                                   <button class="vote-btn" onclick="vote(${c.id}, 'down')">👎 ${c.vetos}</button>` 
-                               : '<small style="color:#999">Votes disabled for private issues</small>'}
+                               : '<small style="opacity:0.7">Votes disabled for private issues</small>'}
                 
+                <button class="vote-btn" onclick="toggleComments(${c.id})" style="margin-left: 10px;">💬 Comments (${(c.comments || []).length})</button>
+
                 ${currentRole === 'admin' ? `
                     <select onchange="updateStatus(${c.id}, this.value)" style="width:140px; margin:0; padding: 5px; margin-left: auto;">
                         <option value="" disabled selected>Change Status</option>
@@ -159,23 +220,110 @@ function renderComplaints() {
                     </select>
                 ` : ''}
             </div>
+
+            <div id="comments-${c.id}" class="comments-section">
+                ${(c.comments || []).map(comment => `
+                    <div class="comment-item">
+                        <div class="comment-header">
+                            <strong>${comment.author}</strong>
+                            <span>${comment.votes} likes</span>
+                        </div>
+                        <div>${comment.text}</div>
+                        <div class="comment-actions">
+                            <button class="comment-btn" onclick="voteComment(${c.id}, ${comment.id}, 'up')">🔼</button>
+                            <button class="comment-btn" onclick="voteComment(${c.id}, ${comment.id}, 'down')">🔽</button>
+                            ${comment.isMyComment ? `<button class="comment-btn delete-btn" onclick="deleteComment(${c.id}, ${comment.id})">Delete</button>` : ''}
+                        </div>
+                    </div>
+                `).join('')}
+                
+                <div class="add-comment-row">
+                    <input type="text" id="input-${c.id}" placeholder="Add a comment..." style="margin:0; flex:1;">
+                    <button class="btn-small" onclick="addComment(${c.id})">Post</button>
+                </div>
+            </div>
         </div>
     `).join('');
 
-    if (displayList.length === 0) {
-        container.innerHTML = '<p style="text-align:center; color:#999; padding:20px;">No complaints found.</p>';
-    } else {
-        container.innerHTML = html;
-    }
-    
+    container.innerHTML = displayList.length ? html : '<p style="text-align:center; opacity:0.6; padding:20px;">No complaints found.</p>';
     updateStats();
 }
 
-function getStatusColor(status) {
-    if(status === 'Resolved') return '#22c55e';
-    if(status === 'Rejected') return '#ef4444';
-    if(status === 'In Progress') return '#3b82f6';
-    return '#f59e0b'; // Pending
+// --- 6. ACTIONS & LOGIC ---
+
+function toggleComments(id) {
+    const el = document.getElementById(`comments-${id}`);
+    if (el.style.display === "none" || el.style.display === "") {
+        el.style.display = "block";
+    } else {
+        el.style.display = "none";
+    }
+}
+
+function addComment(complaintId) {
+    const input = document.getElementById(`input-${complaintId}`);
+    const text = input.value.trim();
+    if (!text) return;
+
+    const comp = complaints.find(c => c.id === complaintId);
+    if (!comp.comments) comp.comments = []; // Safety check
+
+    comp.comments.push({
+        id: Date.now(),
+        text: text,
+        author: currentRole === 'admin' ? 'Admin' : 'Me',
+        votes: 0,
+        isMyComment: true
+    });
+
+    saveData();
+    renderComplaints();
+    // Re-open the comment section after render
+    setTimeout(() => toggleComments(complaintId), 50); 
+}
+
+function deleteComment(complaintId, commentId) {
+    if(!confirm("Delete this comment?")) return;
+    const comp = complaints.find(c => c.id === complaintId);
+    comp.comments = comp.comments.filter(c => c.id !== commentId);
+    saveData();
+    renderComplaints();
+    setTimeout(() => toggleComments(complaintId), 50);
+}
+
+function voteComment(complaintId, commentId, type) {
+    const comp = complaints.find(c => c.id === complaintId);
+    const comment = comp.comments.find(c => c.id === commentId);
+    if(type === 'up') comment.votes++;
+    else comment.votes--;
+    saveData();
+    renderComplaints();
+    setTimeout(() => toggleComments(complaintId), 50);
+}
+
+function updateStatus(id, newStatus) {
+    const comp = complaints.find(c => c.id === id);
+
+    // MANDATORY REMARK FOR REJECTION
+    if (newStatus === "Rejected") {
+        const reason = prompt("⚠️ REJECTION REASON REQUIRED:\nPlease explain why this complaint is being rejected.");
+        
+        if (!reason || reason.trim() === "") {
+            alert("❌ Action Cancelled: You must provide a reason to reject a complaint.");
+            renderComplaints(); // Reset dropdown
+            return;
+        }
+        comp.adminRemark = reason;
+    } 
+    // OPTIONAL REMARK FOR OTHER STATUS
+    else if (currentRole === 'admin' && confirm("Do you want to add an admin remark/note?")) {
+         const note = prompt("Enter admin remark:");
+         if(note) comp.adminRemark = note;
+    }
+
+    comp.status = newStatus;
+    saveData();
+    renderComplaints();
 }
 
 function vote(id, type) {
@@ -186,11 +334,11 @@ function vote(id, type) {
     renderComplaints();
 }
 
-function updateStatus(id, status) {
-    const comp = complaints.find(c => c.id === id);
-    comp.status = status;
-    saveData();
-    renderComplaints();
+function getStatusColor(status) {
+    if(status === 'Resolved') return '#22c55e';
+    if(status === 'Rejected') return '#ef4444';
+    if(status === 'In Progress') return '#3b82f6';
+    return '#f59e0b'; // Pending
 }
 
 function sortByVotes() {
@@ -206,14 +354,14 @@ function filterComplaints() {
     
     const displayList = complaints.filter(c => {
         if (currentRole !== 'admin' && c.isPrivate && !c.createdByMe) return false;
-        
         const matchesText = c.description.toLowerCase().includes(query);
         const matchesCat = cat === 'all' || c.category === cat;
         return matchesText && matchesCat;
     });
 
+    // ✅ FIXED: Same fix here for the search view
     const html = displayList.map(c => `
-        <div class="complaint-item status-${c.status.toLowerCase().replace(' ', '-')}" style="${c.isPrivate ? 'border-left: 5px solid #d946ef; background: #fdf4ff;' : ''}">
+        <div class="complaint-item status-${c.status.toLowerCase().replace(' ', '-')} ${c.isPrivate ? 'private-card' : ''}">
             <div class="badge">${c.category}</div>
             ${c.isPrivate ? '<span class="badge" style="background:#d946ef; color:white;">🔒 Private</span>' : ''}
             <span class="badge" style="float:right; background:${getStatusColor(c.status)}; color:white;">${c.status}</span>
@@ -228,7 +376,7 @@ function filterComplaints() {
     container.innerHTML = html;
 }
 
-// --- 5. ANALYTICS & UTILS ---
+// --- 7. UTILS ---
 function updateStats() {
     document.getElementById('stat-total').innerText = complaints.length;
     document.getElementById('stat-resolved').innerText = complaints.filter(c => c.status === 'Resolved').length;
