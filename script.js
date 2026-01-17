@@ -60,6 +60,20 @@ const aiKeywords = {
 document.addEventListener("DOMContentLoaded", function () {
     // Listen for Real-time Data
     console.log("Initializing Firebase Data Listener...");
+
+    // Auth Listener to set User Name
+    DataService.observeAuth((user) => {
+        if (user) {
+            console.log("User Logged In:", user.displayName);
+            if (document.getElementById('userName')) {
+                document.getElementById('userName').innerText = user.displayName || "Student";
+            }
+        } else {
+            // Redirect to login if not logged in (Optional security)
+            // window.location.href = "index.html";
+        }
+    });
+
     DataService.listenToComplaints((data) => {
         console.log("Received Data Update:", data.length, "complaints");
         complaints = data;
@@ -145,10 +159,11 @@ if (document.getElementById('complaintForm')) {
                 isPrivate: isPrivate,
                 createdByMe: true, // Temp for now, real auth will fix this
                 category: autoCategorize(desc),
+                category: autoCategorize(desc),
                 status: 'Submitted',
                 votes: 0,
                 vetos: 0,
-                author: isAnon ? "Anonymous" : "Student", // Should use real user name
+                author: isAnon ? "Anonymous" : (DataService.getUser()?.displayName || "Student"),
                 adminRemark: "",
                 comments: [],
                 attachments: attachments,
@@ -301,7 +316,7 @@ window.addComment = async function (complaintId) {
     const newComment = {
         id: Date.now(),
         text: text,
-        author: currentRole === 'admin' ? 'Admin' : 'Me',
+        author: currentRole === 'admin' ? 'Admin' : (DataService.getUser()?.displayName || "Me"),
         votes: 0,
         isMyComment: true
     };

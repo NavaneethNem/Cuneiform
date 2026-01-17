@@ -55,7 +55,7 @@ window.handleSignup = async function (e) {
         return;
     }
 
-    const result = await DataService.signup(email, pass);
+    const result = await DataService.signup(email, pass, name);
 
     if (result.success) {
         // We could store the 'name' and 'role' in Firestore under a 'users' collection theoretically

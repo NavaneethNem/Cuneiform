@@ -1,6 +1,6 @@
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged, updateProfile } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 import { getFirestore, collection, addDoc, getDocs, updateDoc, doc, query, orderBy, onSnapshot } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
 const firebaseConfig = {
@@ -29,9 +29,13 @@ export const DataService = {
         }
     },
 
-    signup: async (email, password) => {
+    signup: async (email, password, name) => {
         try {
             const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+            // Update Profile with Name
+            await updateProfile(userCredential.user, {
+                displayName: name
+            });
             return { success: true, user: userCredential.user };
         } catch (error) {
             console.error("Signup Error:", error);
@@ -46,6 +50,10 @@ export const DataService = {
 
     observeAuth: (callback) => {
         onAuthStateChanged(auth, callback);
+    },
+
+    getUser: () => {
+        return auth.currentUser;
     },
 
     // --- FIRESTORE DATABASE ---
