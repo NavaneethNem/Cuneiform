@@ -2,85 +2,50 @@
 const defaultComplaints = [
     { 
         id: 101, 
-        description: "🚨 URGENT: Suspicious individual loitering near the Girls' Hostel back gate at 11 PM. No security guard was at the post!", 
-        location: "Girls' Hostel Block B", 
-        category: "Security", 
+        description: "WiFi in the library is extremely slow.", 
+        location: "Library", 
+        category: "IT Support", 
         status: "Pending", 
-        votes: 156, 
-        vetos: 0, 
+        votes: 45, 
+        vetos: 1, 
         timestamp: "17/01/2026", 
-        author: "Anonymous", 
+        author: "User_123", 
         isPrivate: false, 
         createdByMe: false,
         adminRemark: "",
         comments: [
-            { id: 1, text: "I saw him too! He was wearing a black hoodie.", author: "Student_AB", votes: 45, isMyComment: false },
-            { id: 2, text: "This is the second time this week. Where is the warden??", author: "Student_XY", votes: 32, isMyComment: false },
-            { id: 3, text: "Tagging the admin immediately.", author: "Me", votes: 12, isMyComment: true }
+            { id: 1, text: "Same issue on the 2nd floor!", author: "Student_X", votes: 5, isMyComment: false },
+            { id: 2, text: "I think the router is unplugged.", author: "Me", votes: 2, isMyComment: true }
         ]
     },
     { 
         id: 102, 
-        description: "The WiFi crashed exactly 10 minutes before the Internship Exam submission deadline. Half the batch might get disqualified!", 
-        location: "Academic Block - Lab 3", 
-        category: "IT Support", 
-        status: "In Progress", 
-        votes: 98, 
-        vetos: 1, 
-        timestamp: "17/01/2026", 
-        author: "User_Dev", 
-        isPrivate: false, 
-        createdByMe: false,
-        adminRemark: "",
-        comments: [
-            { id: 4, text: "We need an official mail from college to the company ASAP.", author: "Rep_22", votes: 50, isMyComment: false }
-        ]
-    },
-    { 
-        id: 103, 
-        description: "Water cooler on the 2nd floor has visible GREEN ALGAE in the tank. People are getting sick.", 
-        location: "Main Building - Floor 2", 
-        category: "Hygiene", 
-        status: "Pending", 
-        votes: 84, 
+        description: "My roommate is playing drums at 2 AM.", 
+        location: "Block A - Room 101", 
+        category: "General", 
+        status: "Rejected", 
+        votes: 0, 
         vetos: 0, 
         timestamp: "16/01/2026", 
-        author: "User_Health", 
-        isPrivate: false, 
-        createdByMe: false,
-        adminRemark: "",
-        comments: [
-            { id: 5, text: "That is actually disgusting. I'm bringing my own water.", author: "Me", votes: 10, isMyComment: true }
-        ]
-    },
-    { 
-        id: 104, 
-        description: "Ceiling fan in Room 304 is vibrating violently and making sparks. It looks like it's going to fall on us while we sleep.", 
-        location: "Boys Hostel - Room 304", 
-        category: "Maintenance", 
-        status: "Resolved", 
-        votes: 42, 
-        vetos: 0, 
-        timestamp: "15/01/2026", 
-        author: "Me", 
-        isPrivate: false, 
+        author: "Anonymous", 
+        isPrivate: true, 
         createdByMe: true,
-        adminRemark: "Electrician replaced the capacitor and tightened the mount.",
+        adminRemark: "Personal disputes should be handled by the Warden, not this platform.",
         comments: []
     },
     { 
-        id: 105, 
-        description: "Someone stole my wallet from my room while I was in the shower. I suspect it's a specific person in my wing.", 
-        location: "Block A - Room 102", 
+        id: 103, 
+        description: "Stray dog near the main gate is chasing students.", 
+        location: "Main Gate", 
         category: "Security", 
-        status: "In Progress", 
-        votes: 0, 
-        vetos: 0, 
-        timestamp: "17/01/2026", 
-        author: "Me", 
-        isPrivate: true, // PRIVATE: Only Admin and 'Me' can see this
-        createdByMe: true,
-        adminRemark: "",
+        status: "Resolved", 
+        votes: 89, 
+        vetos: 2, 
+        timestamp: "15/01/2026", 
+        author: "User_555", 
+        isPrivate: false, 
+        createdByMe: false,
+        adminRemark: "Animal control has been notified.",
         comments: []
     }
 ];
