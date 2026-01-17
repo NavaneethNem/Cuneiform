@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Student Dashboard</title>
+  <link rel="stylesheet" href="studentcss.css">
+</head>
+<body>
+
+  <div class="student-info">
+    <h3>Submit Complaint</h3>
+  </div>
+
+  <div class="line"></div>
+
+  <h2>HELLO 🖐️</h2>
+
+  <div class="body">
+
+    <!-- Complaint Title -->
+    <input
+      class="input-title"
+      type="text"
+      placeholder="Complaint Title"
+      oninput="detectCategory(this.value)"
+    >
+
+    <!-- Complaint Description -->
+    <textarea
+      class="input-desc"
+      placeholder="Complaint Description"
+    ></textarea>
+
+    <!-- Auto Detected Category -->
+    <div class="detected-category">
+      Detected Category:
+      <span id="categoryResult">—</span>
+    </div>
+
+    <!-- Submit -->
+    <button class="submit-btn">Submit</button>
+
+  </div>
+
+  <script>
+    function detectCategory(text) {
+      text = text.toLowerCase();
+      let category = "Other";
+
+      const academic = [
+        "exam","marks","grade","teacher","attendance",
+        "syllabus","class","faculty","assignment"
+      ];
+
+      const infra = [
+        "wifi","network","hostel","toilet","classroom",
+        "bench","fan","ac","electricity","water","bus"
+      ];
+
+      for (let word of academic) {
+        if (text.includes(word)) {
+          category = "Academic";
+          break;
+        }
+      }
+
+      for (let word of infra) {
+        if (text.includes(word)) {
+          category = "Infrastructure";
+          break;
+        }
+      }
+
+      document.getElementById("categoryResult").innerText = category;
+    }
+  </script>
+
+</body>
+</html>
