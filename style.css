@@ -12,6 +12,7 @@
     --sidebar-bg: #ffffff;
     --shadow: rgba(0,0,0,0.05);
     --badge-bg: #e2e8f0;
+    --private-bg: #fdf4ff; /* Light Pink for Light Mode */
 }
 
 /* Dark Mode Overrides */
@@ -25,8 +26,12 @@
     --sidebar-bg: #1e293b;
     --shadow: rgba(0,0,0,0.3);
     --badge-bg: #334155;
+    --private-bg: #371b42; /* Dark Purple for Dark Mode (Readable text) */
 }
-
+.complaint-item.private-card {
+    border-left-color: #d946ef !important; /* Force Purple Border */
+    background: var(--private-bg) !important;
+}
 /* =========================================
    2. GLOBAL LAYOUT & RESET
    ========================================= */
