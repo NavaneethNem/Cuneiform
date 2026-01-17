@@ -411,3 +411,143 @@ input, textarea, select {
     transition: transform 0.2s;
 }
 .theme-toggle:hover { transform: scale(1.1); }
+/* =========================================
+   12. MOBILE RESPONSIVENESS (The Patch)
+   ========================================= */
+@media (max-width: 768px) {
+
+    /* 1. FIX THE LAYOUT STRUCTURE */
+    .app-container {
+        flex-direction: column; /* Stack Sidebar on top of Content */
+        height: auto; /* Let the page scroll naturally */
+        min-height: 100vh;
+    }
+
+    /* 2. TRANSFORM SIDEBAR INTO TOP NAV */
+    .sidebar {
+        width: 100%;
+        height: auto;
+        padding: 10px 15px;
+        border-right: none;
+        border-bottom: 1px solid var(--border);
+        box-sizing: border-box;
+        position: sticky;
+        top: 0;
+        z-index: 100; /* Keep nav on top while scrolling */
+        box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+    }
+
+    .sidebar .logo {
+        font-size: 20px;
+        margin-bottom: 10px;
+        display: inline-block;
+    }
+
+    /* Make the buttons scroll horizontally */
+    .sidebar nav {
+        display: flex;
+        overflow-x: auto; /* Enable horizontal scrolling */
+        gap: 10px;
+        padding-bottom: 5px; /* Space for scrollbar */
+        -webkit-overflow-scrolling: touch; /* Smooth scroll on iOS */
+    }
+
+    .nav-btn {
+        width: auto;
+        white-space: nowrap; /* Don't wrap text */
+        margin-bottom: 0;
+        font-size: 14px;
+        padding: 8px 14px;
+        background: var(--bg); /* Distinct card-like buttons */
+        border: 1px solid var(--border);
+    }
+
+    .user-profile {
+        display: block !important; /* Bring it back */
+        position: absolute;
+        top: 10px;
+        right: 60px; /* Sit to the left of the Dark Mode Moon */
+        padding: 0;
+        border: none;
+        margin: 0;
+        background: transparent;
+    }
+    .user-profile p { 
+        display: none; 
+    }
+    .user-profile a {
+        display: inline-block;
+        font-size: 12px;
+        font-weight: bold;
+        color: #ef4444; /* Red text */
+        text-decoration: none;
+        background: var(--card-bg); /* Match theme */
+        padding: 6px 12px;
+        border-radius: 20px;
+        border: 1px solid var(--border);
+        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    }
+
+    /* 3. FIX CONTENT SPACING */
+    .content {
+        padding: 15px; /* Reduce padding */
+        width: 100%;
+        box-sizing: border-box;
+        overflow-y: visible; /* Enable body scroll */
+    }
+
+    /* 4. FIX HEADER & BUTTONS */
+    header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+    }
+
+    header h1 { margin: 0; font-size: 24px; }
+
+    .btn-primary {
+        width: 100%; /* Full width buttons are easier to tap */
+        padding: 12px; /* Fat finger friendly */
+    }
+
+    /* 5. STACK THE STATS GRID */
+    .stats-grid {
+        grid-template-columns: 1fr; /* Force 1 column */
+        gap: 15px;
+    }
+
+    /* 6. FIX COMPLAINT CARDS */
+    .complaint-item {
+        padding: 15px;
+    }
+
+    .vote-btns {
+        flex-wrap: wrap; /* Allow buttons to wrap if they run out of space */
+    }
+
+    .vote-btn {
+        flex: 1; /* Make buttons grow to fill space */
+        text-align: center;
+    }
+
+    /* 7. FIX MODALS */
+    .modal-content {
+        width: 85%; /* Don't overflow screen */
+        margin: 20% auto;
+        padding: 20px;
+    }
+
+    .form-row {
+        flex-direction: column; /* Stack form inputs */
+        gap: 10px;
+    }
+
+    /* 8. ADJUST THEME TOGGLE */
+    .theme-toggle {
+        top: 12px;
+        right: 12px;
+        width: 32px;
+        height: 32px;
+        font-size: 16px;
+    }
+}
