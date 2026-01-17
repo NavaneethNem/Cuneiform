@@ -170,7 +170,6 @@ if(document.getElementById('complaintForm')) {
 
 // --- 5. RENDER LOGIC (UPDATED WITH COMMENTS) ---
 function renderComplaints() {
-    // Determine which container to use
     const isDashboard = document.getElementById('dashboard-view').style.display !== 'none';
     const isMyComplaints = document.getElementById('my-complaints-view') && document.getElementById('my-complaints-view').style.display !== 'none';
     
@@ -182,27 +181,19 @@ function renderComplaints() {
     const container = document.getElementById(containerId);
     if (!container) return;
 
-    // --- PRIVACY FILTER LOGIC ---
     let displayList = complaints.filter(c => {
         if (isMyComplaints) return c.createdByMe === true; 
-        
-        // 1. Admin sees everything
         if (currentRole === 'admin') return true;
-        
-        // 2. User sees Public complaints
         if (!c.isPrivate) return true;
-        
-        // 3. User sees their OWN private complaints (Author is 'Me')
         if (c.isPrivate && c.createdByMe) return true;
-        
-        // 4. Hide everything else
         return false;
     });
 
-    if (isDashboard) displayList = displayList.slice(0, 5); // Limit dashboard to 5
+    if (isDashboard) displayList = displayList.slice(0, 5);
 
+    // ✅ FIXED: Removed inline style, added 'private-card' class
     const html = displayList.map(c => `
-        <div class="complaint-item status-${c.status.toLowerCase().replace(' ', '-')}" style="${c.isPrivate ? 'border-left: 5px solid #d946ef; background: #fdf4ff;' : ''}">
+        <div class="complaint-item status-${c.status.toLowerCase().replace(' ', '-')} ${c.isPrivate ? 'private-card' : ''}">
             <div class="badge">${c.category}</div>
             ${c.isPrivate ? '<span class="badge" style="background:#d946ef; color:white; margin-left:5px;">🔒 Private</span>' : ''}
             <span class="badge" style="float:right; background:${getStatusColor(c.status)}; color:white;">${c.status}</span>
@@ -211,12 +202,12 @@ function renderComplaints() {
             
             ${c.adminRemark ? `<div class="admin-remark-box"><b>👮 Admin Remark:</b> ${c.adminRemark}</div>` : ''}
 
-            <p style="font-size: 14px; color: #666;">📍 ${c.location} | 👤 ${c.author} | 📅 ${c.timestamp}</p>
+            <p style="font-size: 14px; opacity: 0.8;">📍 ${c.location} | 👤 ${c.author} | 📅 ${c.timestamp}</p>
             
             <div class="vote-btns">
                 ${!c.isPrivate ? `<button class="vote-btn" onclick="vote(${c.id}, 'up')">👍 ${c.votes}</button>
                                   <button class="vote-btn" onclick="vote(${c.id}, 'down')">👎 ${c.vetos}</button>` 
-                               : '<small style="color:#999">Votes disabled for private issues</small>'}
+                               : '<small style="opacity:0.7">Votes disabled for private issues</small>'}
                 
                 <button class="vote-btn" onclick="toggleComments(${c.id})" style="margin-left: 10px;">💬 Comments (${(c.comments || []).length})</button>
 
@@ -239,8 +230,8 @@ function renderComplaints() {
                         </div>
                         <div>${comment.text}</div>
                         <div class="comment-actions">
-                            <button class="comment-btn" onclick="voteComment(${c.id}, ${comment.id}, 'up')">🔼 Upvote</button>
-                            <button class="comment-btn" onclick="voteComment(${c.id}, ${comment.id}, 'down')">🔽 Downvote</button>
+                            <button class="comment-btn" onclick="voteComment(${c.id}, ${comment.id}, 'up')">🔼</button>
+                            <button class="comment-btn" onclick="voteComment(${c.id}, ${comment.id}, 'down')">🔽</button>
                             ${comment.isMyComment ? `<button class="comment-btn delete-btn" onclick="deleteComment(${c.id}, ${comment.id})">Delete</button>` : ''}
                         </div>
                     </div>
@@ -254,12 +245,7 @@ function renderComplaints() {
         </div>
     `).join('');
 
-    if (displayList.length === 0) {
-        container.innerHTML = '<p style="text-align:center; color:#999; padding:20px;">No complaints found.</p>';
-    } else {
-        container.innerHTML = html;
-    }
-    
+    container.innerHTML = displayList.length ? html : '<p style="text-align:center; opacity:0.6; padding:20px;">No complaints found.</p>';
     updateStats();
 }
 
@@ -362,33 +348,20 @@ function sortByVotes() {
 }
 
 function filterComplaints() {
-    // Basic filter that re-renders logic
     const query = document.getElementById('searchInput').value.toLowerCase();
     const cat = document.getElementById('filterCategory').value;
-    
-    // NOTE: This basic implementation relies on re-rendering. 
-    // For a smoother search without losing state, we would filter inside renderComplaints 
-    // based on a global search variable, but for this demo, we can just filter the display logic manually here:
-    
     const container = document.getElementById('full-complaint-list');
     
     const displayList = complaints.filter(c => {
-         // Privacy Check
         if (currentRole !== 'admin' && c.isPrivate && !c.createdByMe) return false;
-
         const matchesText = c.description.toLowerCase().includes(query);
         const matchesCat = cat === 'all' || c.category === cat;
         return matchesText && matchesCat;
     });
 
-    // Reuse the HTML generation logic (simplified for search view)
-    // To keep it dry, we usually separate the HTML generator, but for hackathon speed:
-    // Just trigger renderComplaints() and let it handle standard view, 
-    // OR we just manually update innerHTML here (as you had before).
-    // Let's stick to your previous manual update for search to avoid complex state management.
-    
+    // ✅ FIXED: Same fix here for the search view
     const html = displayList.map(c => `
-        <div class="complaint-item status-${c.status.toLowerCase().replace(' ', '-')}" style="${c.isPrivate ? 'border-left: 5px solid #d946ef; background: #fdf4ff;' : ''}">
+        <div class="complaint-item status-${c.status.toLowerCase().replace(' ', '-')} ${c.isPrivate ? 'private-card' : ''}">
             <div class="badge">${c.category}</div>
             ${c.isPrivate ? '<span class="badge" style="background:#d946ef; color:white;">🔒 Private</span>' : ''}
             <span class="badge" style="float:right; background:${getStatusColor(c.status)}; color:white;">${c.status}</span>
