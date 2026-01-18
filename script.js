@@ -284,7 +284,7 @@ function renderComplaints() {
                         <div class="comment-actions">
                             <button class="comment-btn" onclick="voteComment('${c.id}', ${comment.id}, 'up')">🔼</button>
                             <button class="comment-btn" onclick="voteComment('${c.id}', ${comment.id}, 'down')">🔽</button>
-                            ${comment.isMyComment ? `<button class="comment-btn delete-btn" onclick="deleteComment('${c.id}', ${comment.id})">Delete</button>` : ''}
+                            ${(comment.userId === currentUid || currentRole === 'admin') ? `<button class="comment-btn delete-btn" onclick="deleteComment('${c.id}', ${comment.id})">Delete</button>` : ''}
                         </div>
                     </div>
                 `).join('')}
@@ -324,8 +324,8 @@ window.addComment = async function (complaintId) {
         id: Date.now(),
         text: text,
         author: currentRole === 'admin' ? 'Admin' : (DataService.getUser()?.displayName || "Me"),
-        votes: 0,
-        isMyComment: true
+        userId: DataService.getUser()?.uid, // Store UID
+        votes: 0
     };
 
     await DataService.addComment(complaintId, newComment, comp.comments || []);
@@ -338,12 +338,53 @@ window.addComment = async function (complaintId) {
 window.vote = function (id, type) {
     const comp = complaints.find(c => c.id === id);
     if (type === 'up') DataService.upvoteComplaint(id, comp.votes || 0);
-    // Vetos not implemented in service yet, but UI is there
+}
+
+window.voteComment = async function (complaintId, commentId, type) {
+    const comp = complaints.find(c => c.id === complaintId);
+    await DataService.voteComment(complaintId, commentId, type, comp.comments || []);
+}
+
+window.deleteComment = async function (complaintId, commentId) {
+    if (!confirm("Delete this comment?")) return;
+    const comp = complaints.find(c => c.id === complaintId);
+    // Client-side permission check (Double verification)
+    const comment = comp.comments.find(c => c.id === commentId);
+    const currentUser = DataService.getUser();
+
+    if (currentUser.uid !== comment.userId && document.body.id !== 'admin') {
+        alert("You can only delete your own comments!");
+        return;
+    }
+
+    await DataService.deleteComment(complaintId, commentId, comp.comments || []);
 }
 
 window.updateStatus = async function (id, newStatus) {
-    // In a real app we'd handle the remarks logic too, but for now just status
-    await DataService.updateStatus(id, newStatus);
+    let remark = "";
+
+    // MANDATORY REMARK FOR REJECTION
+    if (newStatus === "Rejected") {
+        remark = prompt("⚠️ REJECTION REASON REQUIRED:\nPlease explain why this complaint is being rejected.");
+        if (!remark || remark.trim() === "") {
+            alert("❌ Action Cancelled: You must provide a reason to reject a complaint.");
+            renderComplaints(); // Reset dropdown (UI revert)
+            return;
+        }
+    }
+    // OPTIONAL REMARK FOR OTHER STATUS
+    else if (confirm("Do you want to add an admin remark/note? (Optional)")) {
+        remark = prompt("Enter admin remark:");
+    }
+
+    // In a real app we'd save the remark too. DataService.updateStatus needs to support remarks if we want to save them.
+    // For now, let's just save the status to keep it simple as per original request, 
+    // OR we can update DataService to accept 'adminRemark'.
+    // Let's just update status for now, as user asked for the PROMPT logic mainly.
+    // Wait, if they give a remark, it SHOULD be saved. 
+    // I need to update DataService.updateStatus to accept remark!
+
+    await DataService.updateStatus(id, newStatus, remark);
 }
 
 function getStatusColor(status) {
@@ -443,4 +484,11 @@ window.resetAI = function () {
     document.getElementById('aiPanel').style.display = 'none';
     document.getElementById('aiSentiment').innerText = "Neutral 😐";
     document.getElementById('aiUrgency').innerText = "Low";
+}
+
+window.seedDatabase = async function () {
+    if (confirm("Load demo data? This will add sample complaints.")) {
+        await DataService.seedData();
+        alert("Demo data loaded!");
+    }
 }

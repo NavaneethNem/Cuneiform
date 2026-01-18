@@ -73,6 +73,48 @@ export const DataService = {
         }
     },
 
+    seedData: async () => {
+        const demoData = [
+            {
+                description: "WiFi in the library is extremely slow.",
+                location: "Library",
+                category: "IT Support",
+                status: "Pending",
+                votes: 45,
+                vetos: 1,
+                timestamp: Date.now(),
+                author: "Demo Student",
+                userId: "demo_user",
+                isPrivate: false,
+                adminRemark: "",
+                comments: [
+                    { id: 1, text: "Same issue!", author: "Student X", votes: 5, userId: "other" }
+                ],
+                aiAnalysis: { sentiment: "Neutral 😐", urgency: "Low" }
+            },
+            {
+                description: "Water leak in Block A washroom.",
+                location: "Hostel Block A",
+                category: "Maintenance",
+                status: "Resolved",
+                votes: 12,
+                vetos: 0,
+                timestamp: Date.now() - 86400000,
+                author: "Demo Student",
+                userId: "demo_user",
+                isPrivate: false,
+                adminRemark: "Fixed by plumbing team.",
+                comments: [],
+                aiAnalysis: { sentiment: "Urgent ⚠️", urgency: "High" }
+            }
+        ];
+
+        for (const data of demoData) {
+            await addDoc(collection(db, "complaints"), data);
+        }
+        return true;
+    },
+
     // Get all complaints (Real-time listener)
     // Usage: DataService.listenToComplaints((complaints) => { updateUI(complaints) })
     listenToComplaints: (callback) => {
@@ -96,21 +138,40 @@ export const DataService = {
     },
 
     // Resolve/Update Status
-    updateStatus: async (id, newStatus) => {
+    updateStatus: async (id, newStatus, remark) => {
         const docRef = doc(db, "complaints", id);
-        await updateDoc(docRef, {
-            status: newStatus
-        });
+        const updateData = { status: newStatus };
+        if (remark) updateData.adminRemark = remark;
+
+        await updateDoc(docRef, updateData);
     },
 
     // Add Comment (Appending to array is simpler for now, subcollections ideally later)
     addComment: async (id, comment, oldComments = []) => {
         const docRef = doc(db, "complaints", id);
-        // Firestore specific arrayUnion is better, but let's just write the whole array for simplicity matching the current logic
         const updatedComments = [...oldComments, comment];
         await updateDoc(docRef, {
             comments: updatedComments
         });
+    },
+
+    // Vote on Comment (Read-Modify-Write entire array)
+    voteComment: async (complaintId, commentId, type, oldComments) => {
+        const docRef = doc(db, "complaints", complaintId);
+        const updatedComments = oldComments.map(c => {
+            if (c.id === commentId) {
+                return { ...c, votes: type === 'up' ? c.votes + 1 : c.votes - 1 };
+            }
+            return c;
+        });
+        await updateDoc(docRef, { comments: updatedComments });
+    },
+
+    // Delete Comment (Read-Modify-Write)
+    deleteComment: async (complaintId, commentId, oldComments) => {
+        const docRef = doc(db, "complaints", complaintId);
+        const updatedComments = oldComments.filter(c => c.id !== commentId);
+        await updateDoc(docRef, { comments: updatedComments });
     }
 };
 
