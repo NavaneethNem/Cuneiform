@@ -1,98 +1,147 @@
 <!DOCTYPE html>
-<html>
-
+<html lang="en">
 <head>
-  <title>CUNEIFORM</title>
-  <link rel="stylesheet" href="index.css">
+  <meta charset="UTF-8" />
+  <title>Cuneiform | Universal Complaint System</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="front.css" />
 </head>
 
-<body class="state-login">
+<body>
+  <!-- NAVBAR -->
+  <header class="navbar">
+    <div class="logo">Cuneiform</div>
 
-  <!-- Background layers -->
-  <div class="layer layer-3"></div>
-  <div class="layer layer-2"></div>
-  <div class="layer layer-1"></div>
+    <nav class="nav-links">
+      <a href="#features">Features</a>
+      <a href="#info">Info</a>
+      <a href="#contact">Contact</a>
+    </nav>
 
-  <!-- Main Box -->
-  <div class="table" id="card">
+    <div class="nav-actions">
+      <label class="toggle">
+        <input type="checkbox" id="themeToggle">
+        <span class="slider"></span>
+      </label>
+      <a href="frontt.html" class="signup-btn">Sign Up</a>
+    </div>
+  </header>
 
-    <h1>CUNEIFORM</h1>
-    <p>Universal Complaint Platform</p>
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-title-wrapper">
+      <div>
+      <img src="ChatGPT_Image_Jan_18_2026-removebg-preview.png".png" class="hero-icon" alt="Left Icon">
 
-    <!-- LOGIN FORM -->
-    <form class="login-form screen" onsubmit="handleLogin(event)">
-      <input type="email" id="loginEmail" placeholder="Email ID" required />
-      <input type="password" id="loginPass" placeholder="Password" required />
-
-      <button class="login-btn" type="submit">Login</button>
-
-      <div class="account-row">
-        <span class="left-text">DON'T HAVE AN ACCOUNT?</span>
-        <span class="create-link" onclick="goCategory()">CREATE AN ACCOUNT</span>
       </div>
-    </form>
+        <div>
 
-    <!-- CATEGORY WINDOW -->
-    <div class="category-window screen">
-      <div class="category-item" onclick="goSignupChoice('Hostel')">
-        <img src="edu.png" />
-        <h3>HOSTEL</h3>
-      </div>
+      <h1>Universal Complaint Management System</h1>
 
-      <div class="category-item" onclick="goSignupChoice('Hospital')">
-        <img src="hospital.png" />
-        <h3>HOSPITAL</h3>
-      </div>
+        </div>
+<div>
+      <img src="ChatGPT_Image_Jan_18_2026__1_-removebg-preview.png" class="hero-icon" alt="Right Icon">
 
-      <div class="category-item" onclick="goSignupChoice('Flat')">
-        <img src="flat.png" />
-        <h3>FLAT</h3>
-      </div>
+</div>
     </div>
 
-    <!-- SIGNUP CHOICE -->
-    <div class="signup-choice screen">
-      <button class="buttonsignup" onclick="goFinalSignup('user')">Signup as Student</button>
-      <button class="buttonsignup" onclick="goFinalSignup('admin')">Signup as Admin</button>
+    <p>Smart. Secure. Transparent complaint tracking from start to resolution.</p>
+  </section>
+
+  <!-- FEATURES -->
+  <section id="features" class="section">
+    <h2>Key Features</h2>
+
+    <div class="feature-slider">
+      <div class="feature-track">
+
+        <div class="feature-card">
+          <img src="brain.png">
+          <h3>Smart Categorization</h3>
+          <p>Complaints are intelligently classified.</p>
+        </div>
+
+        <div class="feature-card">
+          <img src="anonymous.png">
+          <h3>Anonymous Mode</h3>
+          <p>Raise issues without revealing identity.</p>
+        </div>
+
+        <div class="feature-card">
+          <img src="analytics.png">
+          <h3>Live Tracking</h3>
+          <p>Track progress in real time.</p>
+        </div>
+
+        <div class="feature-card">
+          <img src="support (1).png">
+          <h3>Support Complaints</h3>
+          <p>Increase priority with support.</p>
+        </div>
+
+        <div class="feature-card">
+          <img src="image.png">
+          <h3>Universal</h3>
+          <p>Works everywhere.</p>
+        </div>
+
+        <div class="feature-card">
+          <img src="image-removebg-preview (5).png">
+          <h3>Customizable</h3>
+          <p>Adapt to your institution.</p>
+        </div>
+
+      </div>
     </div>
+  </section>
 
-    <!-- SLIDESHOW -->
-    <div class="slideshow-container screen">
-      <div class="slide fade"><img src="ex.png" /></div>
-      <div class="slide fade"><img src="ex1.png" /></div>
-      <div class="slide fade"><img src="ex3.png" /></div>
+  <!-- WHY -->
+  <section id="info" class="section light">
+    <h2>Why Cuneiform?</h2>
 
-      <!-- Controls -->
-      <a class="prev" onclick="plusSlides(-1)">&#10094;</a>
-      <a class="next" onclick="plusSlides(1)">&#10095;</a>
+    <div class="info-grid">
+      <div class="info-box">
+        <h4>The Problem</h4>
+        <p>Complaints get lost, ignored or delayed.</p>
+      </div>
+
+      <div class="info-box">
+        <h4>The Solution</h4>
+        <p>Centralized, trackable, transparent system.</p>
+      </div>
+
+      <div class="info-box">
+        <h4>The Result</h4>
+        <p>Faster resolutions & accountability.</p>
+      </div>
     </div>
+  </section>
 
-    <!-- FINAL SIGNUP FORM -->
-    <form class="signup-form screen" onsubmit="handleSignup(event)">
-      <div class="divider-line"></div>
+  <!-- HOW -->
+  <section class="section">
+    <h2>How It Works</h2>
 
-      <input type="text" id="regName" placeholder="User name" required />
-      <input type="email" id="regEmail" placeholder="Email ID" required />
-      <input type="password" id="regPass" placeholder="Password" required />
-      <input type="password" id="regPassConf" placeholder="Confirm Password" required />
+    <div class="steps-grid">
+      <div class="step">Sign Up</div>
+      <div class="step">Submit Complaint</div>
+      <div class="step">Track Status</div>
+      <div class="step">Get Resolution</div>
+    </div>
+  </section>
 
-      <select class="gender-select" id="regGender" required>
-        <option disabled selected>Select Gender</option>
-        <option>Male</option>
-        <option>Female</option>
-        <option>Other</option>
-      </select>
+  <!-- FOOTER -->
+  <footer id="contact" class="footer">
+    <p><strong>Cuneiform</strong></p>
+    <p>Email: support@cuneiform.app</p>
+    <p>© 2026 Cuneiform. All rights reserved.</p>
+  </footer>
 
-      <input type="date" class="dob-input" id="regDob" required />
-
-      <button type="submit" class="create-btn">Create Account</button>
-    </form>
-
-
-
-  </div>
-
-  <script type="module" src="index.js"></script>
+  <!-- JS -->
+  <script>
+    const toggle = document.getElementById("themeToggle");
+    toggle.addEventListener("change", () => {
+      document.body.classList.toggle("dark", toggle.checked);
+    });
+  </script>
 </body>
-
 </html>
