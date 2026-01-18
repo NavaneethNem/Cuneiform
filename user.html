@@ -130,6 +130,23 @@
             </form>
         </div>
     </div>
+    </div>
+
+    <!-- Duplicate Warning Modal -->
+    <div id="duplicateModal" class="modal" style="z-index: 1100;">
+        <div class="modal-content" style="border-left: 5px solid #f59e0b;">
+            <h2>⚠️ Similar Complaint Found</h2>
+            <p>It looks like someone else may have already reported this:</p>
+            <ul id="duplicateList" style="background: #fffbeb; padding: 10px 20px; border-radius: 8px; color: #92400e;">
+            </ul>
+            <p style="font-size: 14px;">Upvoting an existing complaint is often faster than filing a new one!</p>
+            <div style="text-align: right; margin-top: 20px;">
+                <button class="btn-secondary" onclick="closeModal('duplicateModal')">Cancel</button>
+                <button class="btn-primary" id="confirmDuplicateBtn" style="background: #f59e0b; border:none;">Submit
+                    Anyway</button>
+            </div>
+        </div>
+    </div>
     <button class="theme-toggle" onclick="toggleTheme()" title="Toggle Dark Mode">🌙</button>
     <script type="module" src="script.js"></script>
 </body>

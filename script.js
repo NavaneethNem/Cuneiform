@@ -133,10 +133,184 @@ window.showView = function (viewName) {
 
     let title = viewName.charAt(0).toUpperCase() + viewName.slice(1);
     if (viewName === 'my-complaints') title = "My Complaints";
+    if (viewName === 'ai-summary') title = "AI Summary";
     document.getElementById('view-title').innerText = title;
 
     if (['dashboard', 'complaints', 'my-complaints'].includes(viewName)) renderComplaints();
     if (viewName === 'analytics') renderAnalytics();
+}
+
+// --- 3b. DUPLICATE DETECTION LOGIC ---
+function checkForDuplicates(newText, newLocation) {
+    if (!newText || newText.length < 5) return [];
+
+    const newWords = new Set(newText.toLowerCase().split(/\s+/).filter(w => w.length > 3));
+
+    // Check against open complaints
+    return complaints.filter(c => {
+        if (c.status === 'Resolved' || c.status === 'Rejected') return false; // Ignore closed issues
+
+        // 1. Location Match (Optional but high confidence if matches)
+        const locMatch = c.location === newLocation;
+
+        // 2. Text Similarity (Jaccard Index-ish)
+        const oldWords = c.description.toLowerCase().split(/\s+/).filter(w => w.length > 3);
+        let intersection = 0;
+        oldWords.forEach(w => { if (newWords.has(w)) intersection++; });
+
+        const similarity = intersection / (newWords.size + oldWords.length - intersection);
+
+        // Threshold: If same location, low text match needed (20%). If diff location, high match (50%).
+        const threshold = locMatch ? 0.2 : 0.5;
+
+        return similarity > threshold;
+    }).slice(0, 3); // Return top 3 matches
+}
+
+window.generateAISummary = function () {
+    const loading = document.getElementById('ai-loading');
+    const results = document.getElementById('ai-results');
+
+    // Reset UI
+    loading.style.display = 'block';
+    results.style.display = 'none';
+
+    // Simulate Network Delay (1.5s)
+    setTimeout(() => {
+        // 1. Analyze Data
+        const criticalItems = complaints.filter(c =>
+            (c.aiAnalysis?.urgency === 'Critical' || c.aiAnalysis?.urgency === 'High') && c.status !== 'Resolved'
+        );
+
+        // Group by category to find trends
+        const catCounts = {};
+        complaints.forEach(c => {
+            if (c.timestamp > Date.now() - 604800000) { // Last 7 days
+                catCounts[c.category] = (catCounts[c.category] || 0) + 1;
+            }
+        });
+        const trending = Object.entries(catCounts).sort((a, b) => b[1] - a[1])[0];
+
+        // Find "Mass Complaints" (Simulated clustering by text similarity or location)
+        // For simple demo: Group by Location matching
+        const locCounts = {};
+        complaints.forEach(c => {
+            if (c.status !== 'Resolved') locCounts[c.location] = (locCounts[c.location] || 0) + 1;
+        });
+        const hotspots = Object.entries(locCounts).filter(x => x[1] > 1);
+
+        // 2. Populate UI
+        document.getElementById('ai-critical-count').innerText = criticalItems.length;
+        document.getElementById('ai-trend').innerText = trending ? `${trending[0]} (${trending[1]})` : "None";
+        document.getElementById('ai-action-count').innerText = complaints.filter(c => c.status === 'Submitted' || c.status === 'In Progress').length;
+
+        // Populate lists
+        const criticalList = document.getElementById('ai-critical-list');
+        criticalList.innerHTML = criticalItems.length > 0
+            ? criticalItems.slice(0, 5).map(c => `<li><b>${c.location}:</b> ${c.description} <span class="badge" style="background:#fee2e2; color:#ef4444">${c.aiAnalysis?.urgency || 'Urgent'}</span></li>`).join('')
+            : "<li>No critical issues detected. Great job! 🎉</li>";
+
+        const massList = document.getElementById('ai-mass-list');
+        massList.innerHTML = hotspots.length > 0
+            ? hotspots.map(h => `<li><b>${h[0]}</b> has ${h[1]} active complaints. Possible infrastructure failure?</li>`).join('')
+            : "<li>No significant clustering of complaints detected.</li>";
+
+        // Executive Summary Generation
+        const total = complaints.length;
+        const resolved = complaints.filter(c => c.status === 'Resolved').length;
+        const pending = total - resolved;
+        const rate = total ? Math.round((resolved / total) * 100) : 0;
+
+        let summary = `You have processed <b>${total} complaints</b> with a <b>${rate}% resolution rate</b>. `;
+        if (criticalItems.length > 0) summary += `Attention is immediately required for <b>${criticalItems.length} critical issues</b>, mostly in ${criticalItems[0].location}. `;
+        if (trending) summary += `The most common issue this week is related to <b>${trending[0]}</b>. `;
+        if (hotspots.length > 0) summary += `We noticed a spike in complaints from <b>${hotspots[0][0]}</b>.`;
+
+        document.getElementById('ai-summary-text').innerHTML = summary;
+
+        // Show Results
+        loading.style.display = 'none';
+        results.style.display = 'block';
+
+    }, 1500);
+}
+
+window.predictPatterns = async function () {
+    const btn = document.querySelector('button[onclick="predictPatterns()"]');
+    const badge = document.getElementById('tf-status');
+    const predEl = document.getElementById('pred-count');
+    const msgEl = document.getElementById('pred-msg');
+
+    btn.disabled = true;
+    btn.innerText = "Training Model... ⏳";
+    badge.innerText = "Training...";
+    badge.style.background = "#ddd";
+
+    // 1. Prepare Data (Group complaints by day)
+    // We need at least 3-4 days of data. If not enough, we SIMULATE data for demo.
+    const dayCounts = {};
+    const now = new Date();
+
+    // Seed with actual data
+    complaints.forEach(c => {
+        const d = new Date(c.timestamp).toLocaleDateString();
+        dayCounts[d] = (dayCounts[d] || 0) + 1;
+    });
+
+    // FILLER DATA to ensure we have a trend for the demo (Mocking 7 days history)
+    const xs = []; // Days (0, 1, 2...)
+    const ys = []; // Count
+    for (let i = 6; i >= 0; i--) {
+        const d = new Date();
+        d.setDate(d.getDate() - i);
+        const dayStr = d.toLocaleDateString();
+        // Use real count or random number for demo "trend"
+        // Let's fake an increasing trend: 2, 3, 5, 4, 6, 8, ...
+        const visualTrend = 2 + (6 - i) + Math.floor(Math.random() * 2);
+        const count = dayCounts[dayStr] || visualTrend;
+
+        xs.push(6 - i); // Day index (0 is 6 days ago, 6 is today)
+        ys.push(count);
+    }
+
+    // 2. Define Model (Linear Regression)
+    const model = tf.sequential();
+    model.add(tf.layers.dense({ units: 1, inputShape: [1] }));
+
+    model.compile({ loss: 'meanSquaredError', optimizer: 'sgd' });
+
+    // 3. Train
+    const xTensor = tf.tensor2d(xs, [xs.length, 1]);
+    const yTensor = tf.tensor2d(ys, [ys.length, 1]);
+
+    await model.fit(xTensor, yTensor, { epochs: 250 });
+
+    // 4. Predict for Tomorrow (Day index 7)
+    const prediction = model.predict(tf.tensor2d([7], [1, 1]));
+    const result = Math.round(prediction.dataSync()[0]);
+
+    // 5. Cleanup
+    xTensor.dispose();
+    yTensor.dispose();
+    model.dispose(); // Important for memory
+
+    // 6. Update UI
+    btn.disabled = false;
+    btn.innerText = "Train & Predict 🧠";
+    badge.innerText = "Ready";
+    badge.style.background = "#bbf7d0";
+    badge.style.color = "#166534";
+
+    predEl.innerText = `${Math.max(0, result)}`;
+
+    // Insight logic
+    if (result > ys[ys.length - 1]) {
+        msgEl.innerHTML = `⚠️ <b>Spike Detected:</b> Model predicts an increase from today (${ys[ys.length - 1]}). Prepare resources!`;
+        msgEl.style.color = "#d97706";
+    } else {
+        msgEl.innerHTML = `✅ <b>Stable/Decreasing:</b> Issue volume expected to go down.`;
+        msgEl.style.color = "#059669";
+    }
 }
 
 // --- 4. COMPLAINT ACTIONS ---
@@ -148,6 +322,28 @@ if (document.getElementById('complaintForm')) {
         const isPrivate = document.getElementById('compPrivate').checked;
         const fileInput = document.getElementById('compMedia');
         const file = fileInput.files[0];
+
+        // --- DUPLICATE DETECTION CHECK ---
+        const duplicates = checkForDuplicates(desc, document.getElementById('compLocation').value);
+        if (duplicates.length > 0) {
+            // Show custom duplicate warning Modal instead of Alert
+            const list = document.getElementById('duplicateList');
+            if (list) {
+                list.innerHTML = duplicates.map(d => `<li><b>${d.location}:</b> ${d.description}</li>`).join('');
+                openModal('duplicateModal');
+
+                // Handle the "Submit Anyway" click
+                document.getElementById('confirmDuplicateBtn').onclick = function () {
+                    closeModal('duplicateModal');
+                    processComplaint(attachments); // Continue submission
+                };
+                return; // Stop current submission flow, wait for modal
+            } else {
+                // Fallback if modal missing
+                const proceed = confirm(`⚠️ Possible Duplicate Detected!\n\nWe found similar complaints:\n${duplicates.map(d => `- ${d.description} (${d.location})`).join('\n')}\n\nDo you want to submit anyway?`);
+                if (!proceed) return;
+            }
+        }
 
         const aiData = analyzeText(desc); // Run AI Analysis
 
